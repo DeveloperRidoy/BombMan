@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 
 namespace BombMan.Source.Components.Menus
 {
@@ -11,26 +12,20 @@ namespace BombMan.Source.Components.Menus
     {
         public event Action ExitRequested;
 
-        private readonly List<BaseMenu> _menus;
+        private readonly Stack<BaseMenu> _menuStack;
         private BaseMenu _currentMenu;
-        private BaseMenu _previousMenu;
         private Texture2D _posterImg;
+        private Song _menuBackgroundMusic;
 
         public MenuManager()
         {
-            _menus = new List<BaseMenu>
-            {
-                new MainMenu(),
-                new LevelSelectMenu(), 
-                new AboutMenu(),
-                new MainMenu(),
-                new HelpMenu(),
-                new HighScoreMenu(),
-            };
-            _currentMenu = _menus.First();
+            _menuStack = new Stack<BaseMenu>();
+            var mainMenu = new MainMenu();
+            _menuStack.Push(mainMenu);
+            _currentMenu = mainMenu;
 
             // React to menu changes
-            foreach (var menu in _menus)
+            foreach (var menu in _menuStack)
             {
                 menu.MenuChanged += (Type menuType) => SwitchToMenu(menuType);
                 menu.BackRequested += GoBack;
@@ -41,6 +36,9 @@ namespace BombMan.Source.Components.Menus
         public override void LoadContent()
         {
             _posterImg = Resource.ContentManager.Load<Texture2D>("Images/BomberManPoster");
+            _menuBackgroundMusic = Resource.ContentManager.Load<Song>("Audio/Menus/menuBackgroundMusic");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(_menuBackgroundMusic);
             _currentMenu.LoadContent();
         }
 
@@ -65,13 +63,19 @@ namespace BombMan.Source.Components.Menus
             if (_currentMenu.GetType() == menuType)
                 return; // Avoid redundant menu switching
 
-            _previousMenu = _currentMenu;
-            _currentMenu = _menus.FirstOrDefault(m => m.GetType() == menuType);
-
-            if (_currentMenu == null)
+            var newMenu = (BaseMenu)Activator.CreateInstance(menuType);
+            if (newMenu == null)
             {
                 throw new InvalidOperationException($"No menu of type {menuType} exists in the menu manager.");
             }
+
+            _menuStack.Push(newMenu);
+            _currentMenu = newMenu;
+
+            // Subscribe to events
+            _currentMenu.MenuChanged += (Type type) => SwitchToMenu(type);
+            _currentMenu.BackRequested += GoBack;
+            _currentMenu.ExitRequested += () => ExitRequested?.Invoke();
 
             // Load content for the newly switched menu
             _currentMenu.LoadContent();
@@ -79,9 +83,10 @@ namespace BombMan.Source.Components.Menus
 
         private void GoBack()
         {
-            if (_previousMenu != null)
+            if (_menuStack.Count > 1)
             {
-                (_previousMenu, _currentMenu) = (_currentMenu, _previousMenu);
+                _menuStack.Pop();
+                _currentMenu = _menuStack.Peek();
 
                 // Load content for the menu being switched to
                 _currentMenu.LoadContent();
