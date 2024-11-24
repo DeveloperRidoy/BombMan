@@ -71,6 +71,12 @@ namespace BombMan.Source.Components.Menus
             ExitRequested?.Invoke();
         }
 
+        protected void InvokeBackRequestedEvent()
+        {
+            BackRequested?.Invoke();
+        }
+
+
         public override void LoadContent()
         {
             // Create a 1x1 white texture for drawing the background

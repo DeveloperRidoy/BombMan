@@ -17,8 +17,10 @@ namespace BombMan
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1024;
-            _graphics.PreferredBackBufferHeight = 960;
+            _graphics.PreferredBackBufferWidth = 1280; 
+            _graphics.PreferredBackBufferHeight = 1080;
+
+            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
