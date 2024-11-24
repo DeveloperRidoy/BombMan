@@ -25,8 +25,6 @@ namespace BombMan.Source.Components.Menus
 
         public override void Draw()
         {
-            DrawBackground();
-
             // Get font for drawing
             SpriteFont font = Resource.DefaultFont;
 
@@ -98,7 +96,6 @@ namespace BombMan.Source.Components.Menus
                 Resource.SpriteBatch.Draw(_image, imagePosition, null, Color.White, 0f, Vector2.Zero, imageScale, SpriteEffects.None, 0f);
             }
         }
-
 
 
         public override void Update()
