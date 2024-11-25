@@ -8,8 +8,6 @@ namespace BombMan.Source.Components.Menus
 
     public class MainMenu : BaseMenu
     {
-
-
         public MainMenu() : base(
             "Main Menu",
             new List<MenuItem> {
@@ -40,7 +38,7 @@ namespace BombMan.Source.Components.Menus
 
         private void ShowAbout()
         {
-           InvokeMenuChangedEvent(typeof(AboutMenu));
+            InvokeMenuChangedEvent(typeof(AboutMenu));
         }
 
         private void ShowHelp()

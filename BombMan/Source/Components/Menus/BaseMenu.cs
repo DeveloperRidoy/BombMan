@@ -19,6 +19,7 @@ namespace BombMan.Source.Components.Menus
         protected string _title;
         protected List<string> _description;
 
+        protected Texture2D _image;
         public BaseMenu(string title, List<MenuItem> items, bool isSubMenu = false)
         {
             _title = title;
@@ -46,6 +47,20 @@ namespace BombMan.Source.Components.Menus
             }
         }
 
+        public BaseMenu(string title, Texture2D image, bool isSubMenu = false)
+        {
+            _title = title;
+            _description = new List<string>();
+            _menuItems = new List<MenuItem>();
+            _isSubMenu = isSubMenu;
+            _image = image;
+
+            if (_isSubMenu)
+            {
+                _menuItems.Insert(0, new MenuItem("Back", () => BackRequested?.Invoke()));
+            }
+        }
+
         protected void InvokeMenuChangedEvent(Type menuType)
         {
             MenuChanged?.Invoke(menuType);
@@ -55,6 +70,12 @@ namespace BombMan.Source.Components.Menus
         {
             ExitRequested?.Invoke();
         }
+
+        protected void InvokeBackRequestedEvent()
+        {
+            BackRequested?.Invoke();
+        }
+
 
         public override void LoadContent()
         {
@@ -195,8 +216,19 @@ namespace BombMan.Source.Components.Menus
                     DrawWrappedText(line, descriptionPosition, menuWidth, Color.Black);
                     descriptionPosition.Y += MeasureWrappedTextHeight(line, menuWidth);
                 }
+
+                // Draw image after the description
+                if (_image != null)
+                {
+                    Vector2 imagePosition = new(
+                        (Resource.GraphicsDevice.Viewport.Width - _image.Width) / 2,
+                        descriptionPosition.Y + padding
+                    );
+                    Resource.SpriteBatch.Draw(_image, imagePosition, Color.White);
+                }
             }
         }
+
 
 
 
