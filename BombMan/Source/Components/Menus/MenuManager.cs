@@ -10,6 +10,7 @@ namespace BombMan.Source.Components.Menus
     internal class MenuManager : BaseComponent
     {
         public event Action ExitRequested;
+        public event Action<bool> StartGameRequested;
 
         private readonly Stack<BaseMenu> _menuStack;
         private BaseMenu _currentMenu;
@@ -26,9 +27,10 @@ namespace BombMan.Source.Components.Menus
             // React to menu changes
             foreach (var menu in _menuStack)
             {
-                menu.MenuChanged += (Type menuType) => SwitchToMenu(menuType);
+                menu.MenuChanged += SwitchToMenu;
                 menu.BackRequested += GoBack;
-                menu.ExitRequested += () => ExitRequested?.Invoke();
+                menu.ExitRequested += () => ExitRequested();
+                menu.StartGameRequested += (loadGame) => StartGameRequested(loadGame);
             }
         }
 
@@ -57,24 +59,18 @@ namespace BombMan.Source.Components.Menus
             _currentMenu.Draw();
         }
 
-        public void SwitchToMenu(Type menuType)
+        public void SwitchToMenu(BaseMenu newMenu)
         {
-            if (_currentMenu.GetType() == menuType)
+            if (_currentMenu.GetType() == newMenu.GetType())
                 return; // Avoid redundant menu switching
-
-            var newMenu = (BaseMenu)Activator.CreateInstance(menuType);
-            if (newMenu == null)
-            {
-                throw new InvalidOperationException($"No menu of type {menuType} exists in the menu manager.");
-            }
 
             _menuStack.Push(newMenu);
             _currentMenu = newMenu;
 
             // Subscribe to events
-            _currentMenu.MenuChanged += (Type type) => SwitchToMenu(type);
+            _currentMenu.MenuChanged += SwitchToMenu;
             _currentMenu.BackRequested += GoBack;
-            _currentMenu.ExitRequested += () => ExitRequested?.Invoke();
+            _currentMenu.ExitRequested += ExitRequested;
 
             // Load content for the newly switched menu
             _currentMenu.LoadContent();

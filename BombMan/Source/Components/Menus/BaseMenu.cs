@@ -8,9 +8,10 @@ namespace BombMan.Source.Components.Menus
 {
     public class BaseMenu : BaseComponent
     {
-        public event Action<Type> MenuChanged;
+        public event Action<BaseMenu> MenuChanged;
         public event Action BackRequested;
         public event Action ExitRequested;
+        public event Action<bool> StartGameRequested;
 
         protected Texture2D _backgroundTexture;
         protected List<MenuItem> _menuItems;
@@ -61,9 +62,9 @@ namespace BombMan.Source.Components.Menus
             }
         }
 
-        protected void InvokeMenuChangedEvent(Type menuType)
+        protected void InvokeMenuChangedEvent(BaseMenu menu)
         {
-            MenuChanged?.Invoke(menuType);
+            MenuChanged?.Invoke(menu);
         }
 
         protected void InvokeExitRequestedEvent()
@@ -76,6 +77,10 @@ namespace BombMan.Source.Components.Menus
             BackRequested?.Invoke();
         }
 
+        protected void InvokeStartGameRequestedtedEvent(bool loadGame)
+        {
+            StartGameRequested?.Invoke(loadGame);
+        }
 
         public override void LoadContent()
         {
@@ -99,6 +104,16 @@ namespace BombMan.Source.Components.Menus
             {
                 _menuItems[_selectedIndex]?.Action.Invoke();
             }
+            if (Resource.InputManager.IsEscapePressed())
+            {
+                if (_isSubMenu)
+                {
+                    BackRequested?.Invoke();
+                } else
+                {
+                    ExitRequested?.Invoke();
+                }
+            }
         }
 
         public override void Draw()
@@ -109,7 +124,7 @@ namespace BombMan.Source.Components.Menus
 
         protected void DrawBackground()
         {
-            Vector2 titleSize = Resource.DefaultFont.MeasureString(_title);
+            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
             float padding = 20f;
 
             // Determine menu width based on whether description exists
@@ -148,7 +163,7 @@ namespace BombMan.Source.Components.Menus
 
         protected void DrawMenu()
         {
-            SpriteFont titleFont = Resource.DefaultFont;
+            SpriteFont titleFont = Art.DefaultFont;
             Vector2 titleSize = titleFont.MeasureString(_title);
             float padding = 20f;
 
@@ -185,7 +200,7 @@ namespace BombMan.Source.Components.Menus
             for (int i = 0; i < _menuItems.Count; i++)
             {
                 string option = _menuItems[i]?.Name;
-                Vector2 optionSize = Resource.DefaultFont.MeasureString(option);
+                Vector2 optionSize = Art.DefaultFont.MeasureString(option);
                 Vector2 optionPosition = new(
                     (Resource.GraphicsDevice.Viewport.Width - optionSize.X) / 2,
                     startY + i * (optionSize.Y + padding)
@@ -195,11 +210,11 @@ namespace BombMan.Source.Components.Menus
                 if (i == _selectedIndex)
                 {
                     Resource.SpriteBatch.Draw(_backgroundTexture, new Rectangle((int)optionPosition.X - 10, (int)optionPosition.Y - 5, (int)optionSize.X + 20, (int)optionSize.Y + 10), Color.Orange);
-                    Resource.SpriteBatch.DrawString(Resource.DefaultFont, option, optionPosition, Color.White);
+                    Resource.SpriteBatch.DrawString(Art.DefaultFont, option, optionPosition, Color.White);
                 }
                 else
                 {
-                    Resource.SpriteBatch.DrawString(Resource.DefaultFont, option, optionPosition, Color.Black);
+                    Resource.SpriteBatch.DrawString(Art.DefaultFont, option, optionPosition, Color.Black);
                 }
             }
 
@@ -235,13 +250,13 @@ namespace BombMan.Source.Components.Menus
         private static float MeasureWrappedTextHeight(string text, float maxWidth)
         {
             string[] words = text.Split(' ');
-            float lineHeight = Resource.DefaultFont.MeasureString("A").Y;
+            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
             float currentLineWidth = 0f;
             float totalHeight = lineHeight;
 
             foreach (string word in words)
             {
-                Vector2 wordSize = Resource.DefaultFont.MeasureString(word + " ");
+                Vector2 wordSize = Art.DefaultFont.MeasureString(word + " ");
                 if (currentLineWidth + wordSize.X > maxWidth)
                 {
                     totalHeight += lineHeight;
@@ -259,13 +274,13 @@ namespace BombMan.Source.Components.Menus
         private static void DrawWrappedText(string text, Vector2 position, float maxWidth, Color color)
         {
             string[] words = text.Split(' ');
-            float lineHeight = Resource.DefaultFont.MeasureString("A").Y;
+            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
             float currentLineWidth = 0f;
             Vector2 currentPosition = position;
 
             foreach (string word in words)
             {
-                Vector2 wordSize = Resource.DefaultFont.MeasureString(word + " ");
+                Vector2 wordSize = Art.DefaultFont.MeasureString(word + " ");
                 if (currentLineWidth + wordSize.X > maxWidth)
                 {
                     currentPosition.Y += lineHeight;
@@ -277,7 +292,7 @@ namespace BombMan.Source.Components.Menus
                     currentLineWidth += wordSize.X;
                 }
 
-                Resource.SpriteBatch.DrawString(Resource.DefaultFont, word + " ", currentPosition, color);
+                Resource.SpriteBatch.DrawString(Art.DefaultFont, word + " ", currentPosition, color);
                 currentPosition.X += wordSize.X;
             }
         }

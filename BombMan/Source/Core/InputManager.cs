@@ -45,9 +45,14 @@ namespace BombMan.Source.Core
             return _currentKeyState.IsKeyDown(Keys.P) && _previousKeyState.IsKeyUp(Keys.P);
         }
 
-        public bool IsExit()
+        public bool IsEscape()
         {
             return _currentKeyState.IsKeyDown(Keys.Escape);
+        }
+
+        public bool IsEscapePressed()
+        {
+            return (_currentKeyState.IsKeyDown(Keys.Escape) && _previousKeyState.IsKeyUp(Keys.Escape));
         }
 
         public bool IsMoveUpPressed()

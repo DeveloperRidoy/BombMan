@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BombMan.Source.Components.Menus
 {
@@ -20,13 +19,13 @@ namespace BombMan.Source.Components.Menus
         public override void LoadContent()
         {
             base.LoadContent();
-            _image = Resource.ContentManager.Load<Texture2D>("Images/Help"); // Load Help.png
+            _image = Art.HelpImage;
         }
 
         public override void Draw()
         {
             // Get font for drawing
-            SpriteFont font = Resource.DefaultFont;
+            SpriteFont font = Art.DefaultFont;
 
             // Measure the size of the title and BACK button text
             Vector2 titleSize = font.MeasureString("HELP");
@@ -50,7 +49,6 @@ namespace BombMan.Source.Components.Menus
                 windowWidth / _image.Width, // Scale to fit the width
                 (windowHeight - (buttonPosition.Y + buttonSize.Y + 50)) / _image.Height // Scale to fit the height below the BACK button
             );
-
             Vector2 scaledSize = new(_image.Width * imageScale, _image.Height * imageScale);
 
             // Calculate the image position to center it horizontally and place it below the BACK button
@@ -69,7 +67,7 @@ namespace BombMan.Source.Components.Menus
                 (int)(scaledSize.X + 40),  // Width includes padding
                 (int)totalHeight           // Total height from the title to the image
             );
-            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.8f);
+            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.95f);
 
             // Draw the title
             Resource.SpriteBatch.DrawString(font, "HELP", titlePosition, Color.Black);
@@ -94,18 +92,6 @@ namespace BombMan.Source.Components.Menus
             if (_image != null)
             {
                 Resource.SpriteBatch.Draw(_image, imagePosition, null, Color.White, 0f, Vector2.Zero, imageScale, SpriteEffects.None, 0f);
-            }
-        }
-
-
-        public override void Update()
-        {
-            base.Update();
-
-            // Check for BACK button selection (user input)
-            if (Resource.InputManager.IsEnterPressed())
-            {
-                InvokeBackRequestedEvent();
             }
         }
     }

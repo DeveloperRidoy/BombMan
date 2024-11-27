@@ -1,7 +1,6 @@
 ﻿using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace BombMan.Source.Components.Menus
@@ -19,14 +18,14 @@ namespace BombMan.Source.Components.Menus
         public override void LoadContent()
         {
             base.LoadContent();
-            _image = Resource.ContentManager.Load<Texture2D>("Images/About");
+            _image = Art.AboutImage;
         }
 
 
         public override void Draw()
         {
             // Get font for drawing
-            SpriteFont font = Resource.DefaultFont;
+            SpriteFont font = Art.DefaultFont;
 
             // Measure the size of the title and BACK button text
             Vector2 titleSize = font.MeasureString("ABOUT");
@@ -60,7 +59,7 @@ namespace BombMan.Source.Components.Menus
                 (int)(scaledSize.X + 40),  // Width includes padding
                 (int)(totalHeight)         // Total height from the title to the image
             );
-            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.8f);
+            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.95f);
 
             // Draw the title
             Resource.SpriteBatch.DrawString(font, "ABOUT", titlePosition, Color.Black);
@@ -87,19 +86,6 @@ namespace BombMan.Source.Components.Menus
                 Resource.SpriteBatch.Draw(_image, imagePosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
         }
-
-
-        public override void Update()
-        {
-            base.Update();
-
-            // Check for BACK button selection (user input)
-            if (Resource.InputManager.IsEnterPressed())
-            {
-                InvokeBackRequestedEvent(); // Use the BaseMenu's protected method
-            }
-        }
-
     }
 }
 

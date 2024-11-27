@@ -11,7 +11,8 @@ namespace BombMan.Source.Components.Menus
         public MainMenu() : base(
             "Main Menu",
             new List<MenuItem> {
-                        new ("Start Game", null),
+                        new ("New Game", null),
+                        new ("Load Game", null),
                         new ("About", null),
                         new ("Help", null),
                         new ("High Score", null),
@@ -19,11 +20,12 @@ namespace BombMan.Source.Components.Menus
             }
         )
         {
-            _menuItems[0].Action = StartGame;
-            _menuItems[1].Action = ShowAbout;
-            _menuItems[2].Action = ShowHelp;
-            _menuItems[3].Action = ShowHighScore;
-            _menuItems[4].Action = ExitGame;
+            _menuItems[0].Action = StartNewGame;
+            _menuItems[1].Action = LoadGame;
+            _menuItems[2].Action = ShowAbout;
+            _menuItems[3].Action = ShowHelp;
+            _menuItems[4].Action = ShowHighScore;
+            _menuItems[5].Action = ExitGame;
         }
 
         public override void LoadContent()
@@ -31,24 +33,29 @@ namespace BombMan.Source.Components.Menus
             base.LoadContent();
         }
 
-        private void StartGame()
+        private void StartNewGame()
         {
-            InvokeMenuChangedEvent(typeof(LevelSelectMenu));
+            InvokeStartGameRequestedtedEvent(false);
+        }
+
+        private void LoadGame()
+        {
+            InvokeStartGameRequestedtedEvent(true);
         }
 
         private void ShowAbout()
         {
-            InvokeMenuChangedEvent(typeof(AboutMenu));
+            InvokeMenuChangedEvent(new AboutMenu());
         }
 
         private void ShowHelp()
         {
-            InvokeMenuChangedEvent(typeof(HelpMenu));
+            InvokeMenuChangedEvent(new HelpMenu());
         }
 
         private void ShowHighScore()
         {
-            InvokeMenuChangedEvent(typeof(HighScoreMenu));
+            InvokeMenuChangedEvent(new HighScoreMenu());
         }
 
         private  void ExitGame()

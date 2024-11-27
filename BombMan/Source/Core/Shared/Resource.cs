@@ -16,7 +16,6 @@ namespace BombMan.Source.Core.Shared
         public static SpriteBatch SpriteBatch { get; set; }
         public static GameTime DrawGameTime { get; set; }
         public static GameTime UpdateGameTime { get;set; }
-        public static SpriteFont DefaultFont { get; set; }
         public static InputManager InputManager { get; set; }
     }
 }

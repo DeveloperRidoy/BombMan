@@ -28,7 +28,7 @@ namespace BombMan
             Resource.GraphicsDevice = GraphicsDevice;
             Resource.ContentManager = Content;
             Resource.InputManager = new InputManager();
-
+            
             _gameManager = new(this);
 
             base.Initialize();
@@ -37,17 +37,15 @@ namespace BombMan
         protected override void LoadContent()
         {
             Resource.SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Resource.DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
+            Art.LoadContent();
             _gameManager.LoadContent();
+           
         }
 
         protected override void Update(GameTime gameTime)
         {
             Resource.UpdateGameTime = gameTime;
             Resource.InputManager.Update();
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
             _gameManager.Update();
             base.Update(gameTime);

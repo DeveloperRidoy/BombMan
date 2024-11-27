@@ -1,18 +1,21 @@
 ﻿using BombMan.Source.Components;
+using BombMan.Source.Components.GamePlay;
 using BombMan.Source.Components.Menus;
+using Microsoft.Xna.Framework.Media;
 
 namespace BombMan.Source.Core
 {
 
     public enum GameState
     {
-        MainMenu, InGame, PausedMenu, GameOver, GameWon, GameLost, GameExit
+        Menu, InGame, GameExit
     }
 
     internal class GameManager: BaseComponent
     {
         private readonly Game _game;
         private readonly MenuManager _menuManager;
+        private GamePlayManager _gamePlayManager;
 
         public GameState CurrentGameState { get; private set; }
 
@@ -21,33 +24,34 @@ namespace BombMan.Source.Core
             _game = game;
             _menuManager = new ();
             _menuManager.ExitRequested += ExitGame;
-            CurrentGameState = GameState.MainMenu;
+            _menuManager.StartGameRequested += StartGame;
+            CurrentGameState = GameState.Menu;
         }
 
-        public void ExitGame () => _game.Exit();
+        private void StartGame(bool loadGame)
+        {
+            _gamePlayManager = new GamePlayManager(loadGame);
+            _gamePlayManager.MainMenuRequested += () =>
+            {
+                CurrentGameState = GameState.Menu;
+                _menuManager.LoadContent(); // Reload menu content and music
+            };
+            CurrentGameState = GameState.InGame;
+            MediaPlayer.Stop(); // Stop menu music
+            _gamePlayManager.LoadContent(); // Load game content
+        }
+
+        public void ExitGame () => CurrentGameState = GameState.GameExit;
 
         public override void LoadContent()
         {
             switch (CurrentGameState)
             {
-                case GameState.MainMenu:
+                case GameState.Menu:
                     _menuManager.LoadContent();
                     break;
                 case GameState.InGame:
-                    // Load game
-                    break;
-                case GameState.PausedMenu:
-                    _menuManager.LoadContent();
-                    // Load pause menu
-                    break;
-                case GameState.GameOver:
-                    // Load game over screen
-                    break;
-                case GameState.GameWon:
-                    // Load game won screen
-                    break;
-                case GameState.GameLost:
-                    // Load game lost screen
+                    _gamePlayManager.LoadContent();
                     break;
             }
 
@@ -58,23 +62,11 @@ namespace BombMan.Source.Core
             // Update game state
             switch (CurrentGameState)
             {
-                case GameState.MainMenu:
+                case GameState.Menu:
                     _menuManager.Update();
                     break;
                 case GameState.InGame:
-                    // Load game
-                    break;
-                case GameState.PausedMenu:
-                    _menuManager.Update();
-                    break;
-                case GameState.GameOver:
-                    // Load game over screen
-                    break;
-                case GameState.GameWon:
-                    // Load game won screen
-                    break;
-                case GameState.GameLost:
-                    // Load game lost screen
+                    _gamePlayManager.Update();
                     break;
                 case GameState.GameExit:
                     // Exit game
@@ -88,23 +80,11 @@ namespace BombMan.Source.Core
 
             switch (CurrentGameState)
             {
-                case GameState.MainMenu:
+                case GameState.Menu:
                     _menuManager.Draw();
                     break;
                 case GameState.InGame:
-                    // Draw game
-                    break;
-                case GameState.PausedMenu:
-                    _menuManager.Draw();
-                    break;
-                case GameState.GameOver:
-                    // Draw game over screen
-                    break;
-                case GameState.GameWon:
-                    // Draw game won screen
-                    break;
-                case GameState.GameLost:
-                    // Draw game lost screen
+                    _gamePlayManager.Draw();
                     break;
             }
 
