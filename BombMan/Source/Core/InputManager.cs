@@ -50,6 +50,11 @@ namespace BombMan.Source.Core
             return _currentKeyState.IsKeyDown(Keys.Escape);
         }
 
+        public bool IsSpace()
+        {
+            return _currentKeyState.IsKeyDown(Keys.Space);
+        }
+
         public bool IsEscapePressed()
         {
             return (_currentKeyState.IsKeyDown(Keys.Escape) && _previousKeyState.IsKeyUp(Keys.Escape));
@@ -78,6 +83,11 @@ namespace BombMan.Source.Core
         public bool IsEnterPressed()
         {
             return _currentKeyState.IsKeyDown(Keys.Enter) && _previousKeyState.IsKeyUp(Keys.Enter);
+        }
+
+        public bool IsSpacePressed()
+        {
+            return _currentKeyState.IsKeyDown(Keys.Space) && _previousKeyState.IsKeyUp(Keys.Space);
         }
     }
 }

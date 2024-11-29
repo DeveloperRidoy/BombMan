@@ -62,6 +62,19 @@ namespace BombMan.Source.Components.Menus
             }
         }
 
+        public BaseMenu(string title, List<string> description, List<MenuItem> items, bool isSubMenu = false)
+        {
+            _title = title;
+            _description = description;
+            _menuItems = items;
+            _isSubMenu = isSubMenu;
+
+            if (_isSubMenu)
+            {
+                _menuItems.Insert(0, new MenuItem("Back", () => BackRequested?.Invoke()));
+            }
+        }
+
         protected void InvokeMenuChangedEvent(BaseMenu menu)
         {
             MenuChanged?.Invoke(menu);
@@ -109,7 +122,8 @@ namespace BombMan.Source.Components.Menus
                 if (_isSubMenu)
                 {
                     BackRequested?.Invoke();
-                } else
+                }
+                else
                 {
                     ExitRequested?.Invoke();
                 }
@@ -195,8 +209,33 @@ namespace BombMan.Source.Components.Menus
             );
             Resource.SpriteBatch.DrawString(titleFont, _title, titlePosition, Color.Black);
 
+            // Draw description text
+            if (_description != null && _description.Count > 0)
+            {
+                Vector2 descriptionPosition = new(
+                    (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
+                    titlePosition.Y + titleSize.Y + padding
+                );
+
+                foreach (string line in _description)
+                {
+                    DrawWrappedText(line, descriptionPosition, menuWidth, Color.Black);
+                    descriptionPosition.Y += MeasureWrappedTextHeight(line, menuWidth);
+                }
+
+                // Draw image after the description
+                if (_image != null)
+                {
+                    Vector2 imagePosition = new(
+                        (Resource.GraphicsDevice.Viewport.Width - _image.Width) / 2,
+                        descriptionPosition.Y + padding
+                    );
+                    Resource.SpriteBatch.Draw(_image, imagePosition, Color.White);
+                }
+            }
+
             // Draw menu options
-            float startY = titlePosition.Y + titleSize.Y + padding;
+            float startY = titlePosition.Y + titleSize.Y + padding + descriptionHeight;
             for (int i = 0; i < _menuItems.Count; i++)
             {
                 string option = _menuItems[i]?.Name;
@@ -217,35 +256,7 @@ namespace BombMan.Source.Components.Menus
                     Resource.SpriteBatch.DrawString(Art.DefaultFont, option, optionPosition, Color.Black);
                 }
             }
-
-            // Draw description text
-            if (_description != null && _description.Count > 0)
-            {
-                Vector2 descriptionPosition = new(
-                    (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
-                    startY + _menuItems.Count * (titleSize.Y + padding) + padding
-                );
-
-                foreach (string line in _description)
-                {
-                    DrawWrappedText(line, descriptionPosition, menuWidth, Color.Black);
-                    descriptionPosition.Y += MeasureWrappedTextHeight(line, menuWidth);
-                }
-
-                // Draw image after the description
-                if (_image != null)
-                {
-                    Vector2 imagePosition = new(
-                        (Resource.GraphicsDevice.Viewport.Width - _image.Width) / 2,
-                        descriptionPosition.Y + padding
-                    );
-                    Resource.SpriteBatch.Draw(_image, imagePosition, Color.White);
-                }
-            }
         }
-
-
-
 
         private static float MeasureWrappedTextHeight(string text, float maxWidth)
         {
@@ -296,7 +307,5 @@ namespace BombMan.Source.Components.Menus
                 currentPosition.X += wordSize.X;
             }
         }
-
     }
 }
-

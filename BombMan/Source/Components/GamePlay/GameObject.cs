@@ -8,8 +8,8 @@ namespace BombMan.Source.Components.GamePlay
     {
         // Common properties for all game objects
         public Vector2 Position { get; set; } = Vector2.Zero;
-        public int Width { get; protected set; }
-        public int Height { get; protected set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public Texture2D Texture { get; protected set; }
         public bool IsActive { get; set; } = true;
 
@@ -44,6 +44,12 @@ namespace BombMan.Source.Components.GamePlay
 
         // Get Source Rectangle
         public virtual Rectangle GetSourceRectangle()
+        {
+            return new Rectangle(0, 0, Texture.Width, Texture.Height);
+        }
+
+        // Get Bounding Rectangle for collision detection
+        public virtual Rectangle GetBoundingRectangle()
         {
             return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
         }

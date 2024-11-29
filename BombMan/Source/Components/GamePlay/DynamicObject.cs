@@ -13,7 +13,7 @@ namespace BombMan.Source.Components.GamePlay
         public DynamicObject(Vector2 initialPosition, int width, int height, float speed)
             : base(initialPosition, width, height)
         {
-            Speed = speed;
+            Speed = speed * 100;
         }
 
         // Update logic for movement

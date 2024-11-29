@@ -1,8 +1,7 @@
-﻿using BombMan.Source.Components.Menus;
-using BombMan.Source.Components.GamePlay.Characters.Heroes;
-using BombMan.Source.Core.Shared;
+﻿using System;
 using Microsoft.Xna.Framework;
-using System;
+using BombMan.Source.Core.Shared;
+using BombMan.Source.Components.Menus;
 
 namespace BombMan.Source.Components.GamePlay
 {
@@ -11,27 +10,35 @@ namespace BombMan.Source.Components.GamePlay
         private enum GameState
         {
             Playing,
-            Paused
+            Paused,
+            GameOver
         }
 
         public event Action MainMenuRequested;
-        private GameState _gameState = GameState.Playing;
-        private PauseMenu _pausemenu;
-        private readonly Hero _hero;
 
-        public GamePlayManager(bool _)
+        private GameState _gameState = GameState.Playing;
+        private PauseMenu _pauseMenu;
+        private GameOverMenu _gameOverMenu;
+        private GameWorld _gameWorld;
+
+        public GamePlayManager(bool loadGame)
         {
-            _hero = new(new Vector2(100, 100), 72, 104, 100, 100);
+            _gameWorld = new GameWorld(loadGame); // Automatically load or initialize the game world
+            _gameWorld.OnGameOver += HandleGameOver;
         }
+
         public override void LoadContent()
         {
             switch (_gameState)
             {
                 case GameState.Playing:
-                    _hero.LoadContent();
+                    _gameWorld?.LoadContent();
                     break;
                 case GameState.Paused:
-                    _pausemenu.LoadContent();
+                    _pauseMenu?.LoadContent();
+                    break;
+                case GameState.GameOver:
+                    _gameOverMenu?.LoadContent();
                     break;
             }
         }
@@ -39,29 +46,36 @@ namespace BombMan.Source.Components.GamePlay
         public override void Update()
         {
             ListenForEscapeClick();
+
             switch (_gameState)
             {
                 case GameState.Playing:
-                    _hero.Update();
+                    _gameWorld?.Update();
                     break;
                 case GameState.Paused:
-                    _pausemenu.Update();
+                    _pauseMenu?.Update();
+                    break;
+                case GameState.GameOver:
+                    _gameOverMenu?.Update();
                     break;
             }
         }
+
         public override void Draw()
         {
             switch (_gameState)
             {
                 case GameState.Playing:
-                    _hero.Draw();
+                    _gameWorld?.Draw();
                     break;
                 case GameState.Paused:
-                    _pausemenu.Draw();
+                    _pauseMenu?.Draw();
+                    break;
+                case GameState.GameOver:
+                    _gameOverMenu?.Draw();
                     break;
             }
         }
-
 
         private void ListenForEscapeClick()
         {
@@ -75,28 +89,55 @@ namespace BombMan.Source.Components.GamePlay
                 else if (_gameState == GameState.Paused)
                 {
                     _gameState = GameState.Playing;
-                    _pausemenu = null;
+                    _pauseMenu = null;
                 }
             }
         }
 
         private void InitializePauseMenu()
         {
-            _pausemenu = new();
-            _pausemenu.LoadContent();
-            _pausemenu.OnResumeRequest += () =>
+            _pauseMenu = new PauseMenu();
+            _pauseMenu.LoadContent();
+            _pauseMenu.OnResumeRequest += () =>
             {
                 _gameState = GameState.Playing;
-                _pausemenu = null;
+                _pauseMenu = null;
             };
-            _pausemenu.OnRestartRequest += () =>
+            _pauseMenu.OnRestartRequest += () =>
             {
                 _gameState = GameState.Playing;
-                _pausemenu = null;
+                _pauseMenu = null;
+                _gameWorld = new GameWorld(false); // Reset to default world on restart
+                _gameWorld.OnGameOver += HandleGameOver;
+                _gameWorld.LoadContent();
             };
-            _pausemenu.OnMainMenuRequest += () => MainMenuRequested();
+
+            _pauseMenu.OnSaveProgressRequest += () => _gameWorld.SaveToFile();
+            _pauseMenu.OnMainMenuRequest += () => MainMenuRequested?.Invoke();
         }
 
-       
+        private void HandleGameOver(int score, int highScore, bool isNewHighScore)
+        {
+            _gameState = GameState.GameOver;
+            _gameOverMenu = new GameOverMenu(score, highScore, isNewHighScore);
+            _gameOverMenu.OnRestartRequest += RestartGame;
+            _gameOverMenu.OnMainMenuRequest += ReturnToMainMenu;
+            _gameOverMenu.LoadContent();
+        }
+
+        private void RestartGame()
+        {
+            _gameState = GameState.Playing;
+            _gameWorld = new GameWorld(false);
+            _gameWorld.OnGameOver += HandleGameOver;
+            _gameWorld.LoadContent();
+        }
+
+        private void ReturnToMainMenu()
+        {
+            MainMenuRequested?.Invoke();
+        }
     }
 }
+
+
