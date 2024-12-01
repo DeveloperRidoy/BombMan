@@ -28,7 +28,11 @@ namespace BombMan
             Resource.GraphicsDevice = GraphicsDevice;
             Resource.ContentManager = Content;
             Resource.InputManager = new InputManager();
-            
+
+            // Initialize screen properties
+            Resource.ScreenWidth = _graphics.PreferredBackBufferWidth;
+            Resource.ScreenHeight = _graphics.PreferredBackBufferHeight;
+
             _gameManager = new(this);
 
             base.Initialize();

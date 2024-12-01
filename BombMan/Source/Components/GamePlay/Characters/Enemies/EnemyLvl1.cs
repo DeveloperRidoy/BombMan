@@ -8,8 +8,8 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
 {
     internal class EnemyLvl1 : Enemy
     {
-        public EnemyLvl1(Vector2 initialPosition, int width, int height, float speed, int worldWidth, int worldHeight, int hudHeight, int tileSize)
-            : base(initialPosition, width, height, speed, worldWidth, worldHeight, hudHeight, tileSize)
+        public EnemyLvl1(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize)
+            : base(initialPosition, width, height, speed, hudHeight, tileSize)
         {
         }
 

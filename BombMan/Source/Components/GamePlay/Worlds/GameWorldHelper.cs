@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace BombMan.Source.Components.GamePlay
+namespace BombMan.Source.Components.GamePlay.Worlds
 {
     public static class GameWorldHelper
     {

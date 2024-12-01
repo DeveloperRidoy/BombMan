@@ -14,8 +14,8 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
         private TimeSpan _cooldownTimer;
         private const float CooldownDuration = 5f; // 5 seconds cooldown
 
-        public EnemyLvl2(Vector2 initialPosition, int width, int height, float speed, int worldWidth, int worldHeight, int hudHeight, int tileSize, Hero hero)
-            : base(initialPosition, width, height, speed, worldWidth, worldHeight, hudHeight, tileSize)
+        public EnemyLvl2(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize, Hero hero)
+            : base(initialPosition, width, height, speed, hudHeight, tileSize)
         {
             _hero = hero;
             _previousPosition = initialPosition;

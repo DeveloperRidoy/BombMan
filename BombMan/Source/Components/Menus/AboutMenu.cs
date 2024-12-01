@@ -1,12 +1,15 @@
 ﻿using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 
 namespace BombMan.Source.Components.Menus
 {
-    public class AboutMenu : BaseMenu
+    public class AboutMenu : BaseMenu 
     {
+
+        private Song CreditsSong { get; set; }
         public AboutMenu() : base(
             "About",
             new List<string>(), // Explicitly specify the type to resolve ambiguity
@@ -19,6 +22,9 @@ namespace BombMan.Source.Components.Menus
         {
             base.LoadContent();
             _image = Art.AboutImage;
+            CreditsSong = Art.CreditsSong;
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(CreditsSong);
         }
 
 

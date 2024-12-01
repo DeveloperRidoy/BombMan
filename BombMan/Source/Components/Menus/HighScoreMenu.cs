@@ -1,6 +1,7 @@
-﻿using BombMan.Source.Components.GamePlay;
+﻿using BombMan.Source.Components.GamePlay.Worlds;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 
 namespace BombMan.Source.Components.Menus
@@ -17,7 +18,7 @@ namespace BombMan.Source.Components.Menus
 
         private static List<string> FormatHighScores(List<int> highScores)
         {
-            List<string> result = new ();
+            List<string> result = new();
             if (highScores.Count > 0)
             {
                 foreach (var score in highScores)
@@ -31,6 +32,14 @@ namespace BombMan.Source.Components.Menus
             }
 
             return result;
+        }
+
+        public override void LoadContent()
+        {
+            base.LoadContent();
+            MediaPlayer.Stop();
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(Art.HighScoresBgm);
         }
     }
 }

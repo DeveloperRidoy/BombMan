@@ -1,7 +1,8 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using BombMan.Source.Core.Shared;
 using BombMan.Source.Components.Menus;
+using BombMan.Source.Components.GamePlay.Worlds;
+using Microsoft.Xna.Framework.Media;
 
 namespace BombMan.Source.Components.GamePlay
 {
@@ -84,6 +85,7 @@ namespace BombMan.Source.Components.GamePlay
                 if (_gameState == GameState.Playing)
                 {
                     _gameState = GameState.Paused;
+                    MediaPlayer.Pause(); // Pause the game music
                     InitializePauseMenu();
                 }
                 else if (_gameState == GameState.Paused)
@@ -102,6 +104,7 @@ namespace BombMan.Source.Components.GamePlay
             {
                 _gameState = GameState.Playing;
                 _pauseMenu = null;
+                MediaPlayer.Resume(); // Resume the game music
             };
             _pauseMenu.OnRestartRequest += () =>
             {
@@ -112,7 +115,11 @@ namespace BombMan.Source.Components.GamePlay
                 _gameWorld.LoadContent();
             };
 
-            _pauseMenu.OnSaveProgressRequest += () => _gameWorld.SaveToFile();
+            _pauseMenu.OnSaveProgressRequest += () =>
+            {
+                _gameWorld.SaveToFile();
+                Art.PauseSound.Play(); // mimics save sound
+            };
             _pauseMenu.OnMainMenuRequest += () => MainMenuRequested?.Invoke();
         }
 

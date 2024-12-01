@@ -17,5 +17,8 @@ namespace BombMan.Source.Core.Shared
         public static GameTime DrawGameTime { get; set; }
         public static GameTime UpdateGameTime { get;set; }
         public static InputManager InputManager { get; set; }
+        // Screen properties
+        public static int ScreenWidth { get; set; }
+        public static int ScreenHeight { get; set; }
     }
 }

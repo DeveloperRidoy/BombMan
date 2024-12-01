@@ -33,6 +33,10 @@ namespace BombMan.Source.Core.Shared
         public static SoundEffect GameOverSound { get; set; }
         public static SoundEffect PauseSound { get; set; }
         public static SoundEffect HeroOuchSound { get; set; }
+        public static Song CreditsSong { get; set; }
+        public static Song Map1Bgm { get; set; }
+        public static Song Map2Bgm { get; set; }
+        public static Song HighScoresBgm { get; set; }
 
 
         public static void LoadContent()
@@ -44,8 +48,8 @@ namespace BombMan.Source.Core.Shared
             EnemyLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl1");
             EnemyLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl2");
             EnemyLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl3");
-            //BackgroundLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl1");
-            //BackgroundLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl2");
+            BackgroundLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl1");
+            BackgroundLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl2");
             //BackgroundLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl3");
             BlockLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Blocks/Block1");
             BlockLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Blocks/Block2");
@@ -59,6 +63,10 @@ namespace BombMan.Source.Core.Shared
             GameOverSound = Resource.ContentManager.Load<SoundEffect>("Audio/GameOverSound");
             PauseSound = Resource.ContentManager.Load<SoundEffect>("Audio/PauseSound");
             HeroOuchSound = Resource.ContentManager.Load<SoundEffect>("Audio/CharacterSounds/Ouch");
+            CreditsSong = Resource.ContentManager.Load<Song>("Audio/Credits");
+            Map1Bgm = Resource.ContentManager.Load<Song>("Audio/Map1");
+            Map2Bgm = Resource.ContentManager.Load<Song>("Audio/Map2");
+            HighScoresBgm = Resource.ContentManager.Load<Song>("Audio/HighScoresBgm");
         }
     }
 }

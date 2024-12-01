@@ -8,18 +8,20 @@ using BombMan.Source.Components.GamePlay.Items;
 using BombMan.Source.Components.GamePlay.Objects;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 
-namespace BombMan.Source.Components.GamePlay
+namespace BombMan.Source.Components.GamePlay.Worlds
 {
-    public class GameWorld
+    public partial class GameWorld
     {
         public event Action<int, int, bool> OnGameOver;
-        private const int WorldWidth = 10;
-        private const int WorldHeight = 10;
+        private const int WorldWidth = 8;
+        private const int WorldHeight = 8;
         private const int TileSize = 64;
         private const int CharacterWidth = 30;
         private const int CharacterHeight = 40;
         private const int HudHeight = 150;
+        private const int StageBackgroundPadding = 70;
 
         private const string SaveFilePath = "GameWorldSave.bombMan";
 
@@ -43,6 +45,10 @@ namespace BombMan.Source.Components.GamePlay
         private readonly TimeSpan _enemySpawnInterval = TimeSpan.FromSeconds(10); // Spawn every 10 seconds
         private readonly Vector2[] _corners; // Stores corner positions for spawning
 
+        private StageBackground _stageBackground;
+
+        private readonly int _horizontalCenterOffset = 0;
+
         public GameWorld(bool loadGame)
         {
             _floors = new Floor[WorldHeight, WorldWidth];
@@ -52,13 +58,17 @@ namespace BombMan.Source.Components.GamePlay
 
             HighScores = GameWorldHelper.LoadHighScores() ?? new List<int>();
 
+            // Center the game area horizontally
+            int gameWidth = WorldWidth * TileSize + StageBackgroundPadding * 2;
+            _horizontalCenterOffset = (Resource.ScreenWidth - gameWidth) / 2;
+
             _corners = new[]
             {
-                new Vector2(0, HudHeight), // Top-left corner
-                new Vector2((WorldWidth - 1) * TileSize, HudHeight), // Top-right corner
-                new Vector2(0, (WorldHeight - 1) * TileSize + HudHeight), // Bottom-left corner
-                new Vector2((WorldWidth - 1) * TileSize, (WorldHeight - 1) * TileSize + HudHeight) // Bottom-right corner
-            };
+        new Vector2(StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
+        new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
+        new Vector2(StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding),
+        new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding)
+    };
 
             if (loadGame && File.Exists(SaveFilePath))
             {
@@ -70,8 +80,30 @@ namespace BombMan.Source.Components.GamePlay
             }
 
             _hud = new HUD(_hero, this);
-
             _hero.OnPlaceBomb += PlaceBombAtPosition;
+
+            InitializeStageBackground();
+            PlayBackgroundMusic();
+        }
+
+
+
+        // Method to initialize the correct stage background based on the level
+        private void InitializeStageBackground()
+        {
+            var levelType = Level switch
+            {
+                1 => ELvl.Lvl1,
+                _ => ELvl.Lvl2,
+            };
+
+            // Adjust StageBackground to be horizontally centered
+            _stageBackground = new StageBackground(
+                new Vector2(0 + _horizontalCenterOffset, HudHeight), // Apply horizontal offset
+                WorldWidth * TileSize + StageBackgroundPadding * 2,
+                WorldHeight * TileSize + StageBackgroundPadding * 2,
+                levelType
+            );
         }
 
         private void InitializeDefaultWorld()
@@ -82,17 +114,18 @@ namespace BombMan.Source.Components.GamePlay
             PlaceEnemies();
         }
 
-
         private void PlaceFloors()
         {
             for (int y = 0; y < WorldHeight; y++)
             {
                 for (int x = 0; x < WorldWidth; x++)
                 {
-                    _floors[y, x] = new Floor(
-                        new Vector2(x * TileSize, y * TileSize + HudHeight),
-                        TileSize,
-                        TileSize);
+                    Vector2 position = new(
+                        x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                        y * TileSize + HudHeight + StageBackgroundPadding
+                    );
+
+                    _floors[y, x] = new Floor(position, TileSize, TileSize);
                 }
             }
         }
@@ -100,7 +133,7 @@ namespace BombMan.Source.Components.GamePlay
         private void PlaceBlocks()
         {
             Random random = new();
-            for (int i = 0; i < 15; i++) // Place 15 random blocks
+            for (int i = 0; i < 15; i++)
             {
                 int x, y;
                 do
@@ -108,22 +141,22 @@ namespace BombMan.Source.Components.GamePlay
                     x = random.Next(WorldWidth);
                     y = random.Next(WorldHeight);
 
-                    Vector2 blockPosition = new(x * TileSize, y * TileSize + HudHeight);
-                    Vector2 heroStartPosition = new(WorldWidth / 2 * TileSize, WorldHeight / 2 * TileSize + HudHeight);
+                    Vector2 blockPosition = new(
+                        x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                        y * TileSize + HudHeight + StageBackgroundPadding
+                    );
 
-                    // Ensure block is not in the safe zone
-                    if (Vector2.Distance(blockPosition, heroStartPosition) < SafeZoneRadius)
+                    Vector2 heroStartPosition = new(
+                        WorldWidth / 2 * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                        WorldHeight / 2 * TileSize + HudHeight + StageBackgroundPadding
+                    );
+
+                    if (Vector2.Distance(blockPosition, heroStartPosition) < SafeZoneRadius ||
+                        _blocks.Exists(b => b.Position == blockPosition))
                     {
                         continue;
                     }
 
-                    // Ensure block does not overlap with existing blocks
-                    if (_blocks.Exists(b => b.Position == blockPosition))
-                    {
-                        continue;
-                    }
-
-                    // Add the block
                     _blocks.Add(new Block(blockPosition, TileSize, TileSize, Level == 1 ? ELvl.Lvl1 : ELvl.Lvl2));
                     break;
 
@@ -135,11 +168,15 @@ namespace BombMan.Source.Components.GamePlay
         private void PlaceHero()
         {
             _hero = new Hero(
-                new Vector2(WorldWidth / 2 * TileSize, WorldHeight / 2 * TileSize + HudHeight),
+                new Vector2(
+                    WorldWidth / 2 * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                    WorldHeight / 2 * TileSize + HudHeight + StageBackgroundPadding
+                ),
                 CharacterWidth,
                 CharacterHeight,
                 1f,
-                5);
+                5
+            );
         }
 
         private void PlaceEnemies()
@@ -147,7 +184,7 @@ namespace BombMan.Source.Components.GamePlay
             Random random = new();
             _enemies.Clear();
 
-            int numEnemies = Level == 1 ? 5 : 5 + (Level - 1) * 2; // Increase enemies with level
+            int numEnemies = Level == 1 ? 5 : 5 + (Level - 1) * 2;
 
             for (int i = 0; i < numEnemies; i++)
             {
@@ -157,36 +194,25 @@ namespace BombMan.Source.Components.GamePlay
                     x = random.Next(WorldWidth);
                     y = random.Next(WorldHeight);
 
-                    Vector2 enemyPosition = new(x * TileSize, y * TileSize + HudHeight);
-                    Vector2 heroStartPosition = new(WorldWidth / 2 * TileSize, WorldHeight / 2 * TileSize + HudHeight);
+                    Vector2 enemyPosition = new(
+                        x * TileSize + StageBackgroundPadding,
+                        y * TileSize + HudHeight + StageBackgroundPadding
+                    );
 
-                    // Ensure enemy is not in the safe zone
-                    if (Vector2.Distance(enemyPosition, heroStartPosition) < SafeZoneRadius)
-                    {
-                        continue;
-                    }
-
-                    // Ensure enemy does not overlap with blocks or other enemies
-                    if (_blocks.Exists(b => b.Position == enemyPosition) ||
+                    if (Vector2.Distance(enemyPosition, _hero.Position) < SafeZoneRadius ||
+                        _blocks.Exists(b => b.Position == enemyPosition) ||
                         _enemies.Exists(e => e.Position == enemyPosition))
                     {
                         continue;
                     }
 
-                    // Add the enemy
-                    if (Level == 1 || i % 2 == 0)
-                    {
-                        _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, WorldWidth, WorldHeight, HudHeight, TileSize));
-                    }
-                    else
-                    {
-                        _enemies.Add(new EnemyLvl2(enemyPosition, CharacterWidth, CharacterHeight, 0.5f, WorldWidth, WorldHeight, HudHeight, TileSize, _hero));
-                    }
+                    _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
                     break;
 
                 } while (true);
             }
         }
+
 
 
         private void PlaceBombAtPosition(Vector2 position, Hero hero)
@@ -217,15 +243,30 @@ namespace BombMan.Source.Components.GamePlay
         public void Update()
         {
             Vector2 previousPosition = _hero.Position;
-
             _hero.Update();
-
             CheckHeroCollisionWithBlocks(previousPosition);
-            EnsureHeroStaysWithinBounds();
+            EnsureCharactersStaysWithinBounds();
             UpdateEnemies();
             UpdateBombs();
+            ConditionallySpawnEnemies();
+            ResetHeroBombReference();
+            _hud.Update();
+            _stageBackground.Update();
+            HandleGameOver();
+        }
 
-            // Spawn new enemies every 10 seconds if the level is higher than 1
+
+
+        private void ResetHeroBombReference()
+        {
+            if (_hero.LastPlacedBomb != null && !_hero.GetBoundingRectangle().Intersects(_hero.LastPlacedBomb.GetBoundingRectangle()))
+            {
+                _hero.LastPlacedBomb = null;
+            }
+        }
+
+        private void ConditionallySpawnEnemies()
+        {
             if (Level > 1)
             {
                 _enemySpawnTimer += Resource.UpdateGameTime.ElapsedGameTime;
@@ -235,15 +276,6 @@ namespace BombMan.Source.Components.GamePlay
                     _enemySpawnTimer = TimeSpan.Zero;
                 }
             }
-
-            // Reset the hero's bomb reference when moving away
-            if (_hero.LastPlacedBomb != null && !_hero.GetBoundingRectangle().Intersects(_hero.LastPlacedBomb.GetBoundingRectangle()))
-            {
-                _hero.LastPlacedBomb = null;
-            }
-
-            _hud.Update();
-            HandleGameOver();
         }
 
         private void SpawnEnemiesFromCorners()
@@ -259,11 +291,11 @@ namespace BombMan.Source.Components.GamePlay
                     Enemy newEnemy;
                     if (random.Next(2) == 0)
                     {
-                        newEnemy = new EnemyLvl1(corner, CharacterWidth, CharacterHeight, 1, WorldWidth, WorldHeight, HudHeight, TileSize);
+                        newEnemy = new EnemyLvl1(corner, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize);
                     }
                     else
                     {
-                        newEnemy = new EnemyLvl2(corner, CharacterWidth, CharacterHeight, 0.5f, WorldWidth, WorldHeight, HudHeight, TileSize, _hero);
+                        newEnemy = new EnemyLvl2(corner, CharacterWidth, CharacterHeight, 0.5f, HudHeight, TileSize, _hero);
                     }
 
                     newEnemy.LoadContent();
@@ -278,6 +310,9 @@ namespace BombMan.Source.Components.GamePlay
         {
             if (_hero.Health <= 0)
             {
+                // Stop background music
+                MediaPlayer.Stop();
+
                 UpdateHighScores();
                 OnGameOver?.Invoke(Score, HighScores.Max(), IsNewHighScore);
             }
@@ -318,12 +353,21 @@ namespace BombMan.Source.Components.GamePlay
             }
         }
 
-        private void EnsureHeroStaysWithinBounds()
+        private void EnsureCharactersStaysWithinBounds()
         {
+            var bounds = _stageBackground.GetBoundingRectangle();
             _hero.Position = new Vector2(
-                Math.Clamp(_hero.Position.X, 0, WorldWidth * TileSize - CharacterWidth),
-                Math.Clamp(_hero.Position.Y, HudHeight, WorldHeight * TileSize - CharacterHeight + HudHeight)
+                Math.Clamp(_hero.Position.X, bounds.Left + StageBackgroundPadding, bounds.Right - StageBackgroundPadding - CharacterWidth),
+                Math.Clamp(_hero.Position.Y, bounds.Top + StageBackgroundPadding, bounds.Bottom - StageBackgroundPadding - CharacterHeight)
             );
+
+            foreach (var enemy in _enemies)
+            {
+                enemy.Position = new Vector2(
+                     Math.Clamp(enemy.Position.X, bounds.Left + StageBackgroundPadding, bounds.Right - StageBackgroundPadding - CharacterWidth),
+                Math.Clamp(enemy.Position.Y, bounds.Top + StageBackgroundPadding, bounds.Bottom - StageBackgroundPadding - CharacterHeight)
+                    );
+            }
         }
 
         private void UpdateEnemies()
@@ -418,6 +462,9 @@ namespace BombMan.Source.Components.GamePlay
 
         private void InitializeNextLevel()
         {
+            // updaste stage background
+            InitializeStageBackground();
+
             // Clear existing walls, bombs, and enemies
             _blocks.Clear();
             _shouldClearBombs = true; // Set the flag to clear bombs later
@@ -434,6 +481,9 @@ namespace BombMan.Source.Components.GamePlay
 
             // Load contents
             LoadAllContent();
+
+            // Play appropriate background music
+            PlayBackgroundMusic();
         }
 
 
@@ -454,11 +504,14 @@ namespace BombMan.Source.Components.GamePlay
 
             _hero.LoadContent();
             _hud.LoadContent();
+            _stageBackground.LoadContent();
         }
 
 
         public void Draw()
         {
+            // Draw background first
+            _stageBackground.Draw();
             DrawFloors();
             DrawBlocks();
             DrawBombs();
@@ -542,11 +595,11 @@ namespace BombMan.Source.Components.GamePlay
                 Enemy enemy;
                 if (enemyType == 1)
                 {
-                    enemy = new EnemyLvl1(new Vector2(enemyX, enemyY + HudHeight), CharacterWidth, CharacterHeight, 1, WorldWidth, WorldHeight, HudHeight, TileSize);
+                    enemy = new EnemyLvl1(new Vector2(enemyX, enemyY + HudHeight), CharacterWidth, CharacterHeight, 1, HudHeight, TileSize);
                 }
                 else
                 {
-                    enemy = new EnemyLvl2(new Vector2(enemyX, enemyY + HudHeight), CharacterWidth, CharacterHeight, 0.5f, WorldWidth, WorldHeight, HudHeight, TileSize, _hero);
+                    enemy = new EnemyLvl2(new Vector2(enemyX, enemyY + HudHeight), CharacterWidth, CharacterHeight, 0.5f, HudHeight, TileSize, _hero);
                 }
                 _enemies.Add(enemy);
             }
@@ -617,6 +670,25 @@ namespace BombMan.Source.Components.GamePlay
 
             // Save updated high scores
             GameWorldHelper.SaveHighScores(HighScores);
+        }
+
+        private void PlayBackgroundMusic()
+        {
+            // Stop any currently playing music
+            MediaPlayer.Stop();
+
+            // Optional: Set MediaPlayer properties
+            MediaPlayer.IsRepeating = true; // Loop the background music
+
+            // Select and play the appropriate music
+            if (Level == 1)
+            {
+                MediaPlayer.Play(Art.Map1Bgm);
+            }
+            else
+            {
+                MediaPlayer.Play(Art.Map2Bgm);
+            }      
         }
 
     }

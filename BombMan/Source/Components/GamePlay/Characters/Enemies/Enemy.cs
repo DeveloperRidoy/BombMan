@@ -11,16 +11,16 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
     public abstract class Enemy : DynamicObject
     {
         protected static readonly Random Random = new();
-        protected readonly int WorldWidth;
-        protected readonly int WorldHeight;
         protected readonly int HudHeight;
         protected readonly int TileSize;
 
-        protected Enemy(Vector2 initialPosition, int width, int height, float speed, int worldWidth, int worldHeight, int hudHeight, int tileSize)
+        private float _floatingOffset = 0; // For sine wave calculation
+        private const float FloatingSpeed = 10f; // Adjust the speed of floating
+        private const float FloatingAmplitude = 5f; // Adjust the range of floating
+
+        protected Enemy(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize)
             : base(initialPosition, width, height, speed)
         {
-            WorldWidth = worldWidth;
-            WorldHeight = worldHeight;
             HudHeight = hudHeight;
             TileSize = tileSize;
         }
@@ -33,12 +33,27 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
         public override void Update()
         {
             base.Update();
+            // Update the floating offset over time
+            _floatingOffset += FloatingSpeed * (float)Resource.UpdateGameTime.ElapsedGameTime.TotalSeconds;
+        }
 
-            // Ensure enemy does not move outside the grid
-            Position = new Vector2(
-                Math.Clamp(Position.X, 0, WorldWidth * TileSize - Width),
-                Math.Clamp(Position.Y, HudHeight, WorldHeight * TileSize - Height + HudHeight)
-            );
+        public override void Draw()
+        {
+            if (IsActive && Texture != null)
+            {
+                // Calculate floating offset using sine wave
+                float floatOffsetY = (float)Math.Sin(_floatingOffset) * FloatingAmplitude;
+
+                Rectangle sourceRectangle = GetSourceRectangle();
+                Rectangle destinationRectangle = new(
+                    (int)Position.X,
+                    (int)(Position.Y + floatOffsetY), // Add floating effect to Y-axis
+                    Width,
+                    Height
+                );
+
+                Resource.SpriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+            }
         }
 
         public virtual void HandleCollisionWithHero(Hero hero)

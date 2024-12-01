@@ -37,7 +37,6 @@ namespace BombMan.Source.Core
                 _menuManager.LoadContent(); // Reload menu content and music
             };
             CurrentGameState = GameState.InGame;
-            MediaPlayer.Stop(); // Stop menu music
             _gamePlayManager.LoadContent(); // Load game content
         }
 

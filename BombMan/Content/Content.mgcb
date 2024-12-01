@@ -25,11 +25,35 @@
 /processorParam:Quality=Best
 /build:Audio/CharacterSounds/Ouch.wav
 
+#begin Audio/Credits.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Credits.mp3
+
 #begin Audio/GameOverSound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/GameOverSound.wav
+
+#begin Audio/HighScoresBgm.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/HighScoresBgm.mp3
+
+#begin Audio/Map1.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Map1.mp3
+
+#begin Audio/Map2.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Map2.mp3
 
 #begin Audio/Menus/menuBackgroundMusic.mp3
 /importer:Mp3Importer
@@ -61,6 +85,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/About.png
+
+#begin Images/Backgrounds/BackgroundLvl1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Backgrounds/BackgroundLvl1.png
+
+#begin Images/Backgrounds/backgroundLvl2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Backgrounds/backgroundLvl2.png
 
 #begin Images/Blocks/Block1.png
 /importer:TextureImporter

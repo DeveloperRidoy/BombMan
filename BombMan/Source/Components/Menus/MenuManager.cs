@@ -82,7 +82,10 @@ namespace BombMan.Source.Components.Menus
             {
                 _menuStack.Pop();
                 _currentMenu = _menuStack.Peek();
+                MediaPlayer.Stop(); // Stop current menu music
 
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Play(_menuBackgroundMusic);
                 // Load content for the menu being switched to
                 _currentMenu.LoadContent();
             }
