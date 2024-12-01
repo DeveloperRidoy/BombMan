@@ -26,10 +26,10 @@ namespace BombMan.Source.Components.GamePlay
             // Load the background image
             Texture = _level switch
             {
-                ELvl.Lvl1 => Art.BackgroundLvl2,
-                ELvl.Lvl2 => Art.BackgroundLvl2,
-                ELvl.Lvl3 => Art.BackgroundLvl3,
-                _ => Art.BackgroundLvl1
+                ELvl.Lvl1 => Art.StageBackgroundLvl1,
+                ELvl.Lvl2 => Art.StageBackgroundLvl2,
+                ELvl.Lvl3 => Art.StageBackgroundLvl3,
+                _ => Art.StageBackgroundLvl1
             };
         }
     }

@@ -1,8 +1,9 @@
-﻿using System;
-using BombMan.Source.Core.Shared;
+﻿using BombMan.Source.Components.GamePlay.Worlds;
 using BombMan.Source.Components.Menus;
-using BombMan.Source.Components.GamePlay.Worlds;
+using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework.Media;
+using System;
+using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {
@@ -21,15 +22,19 @@ namespace BombMan.Source.Components.GamePlay
         private PauseMenu _pauseMenu;
         private GameOverMenu _gameOverMenu;
         private GameWorld _gameWorld;
+        private readonly GameBackground _gameBackground;
 
         public GamePlayManager(bool loadGame)
         {
             _gameWorld = new GameWorld(loadGame); // Automatically load or initialize the game world
             _gameWorld.OnGameOver += HandleGameOver;
+            _gameBackground = new GameBackground(Vector2.Zero, Resource.ScreenWidth, Resource.ScreenHeight); // Assuming screen dimensions
         }
 
         public override void LoadContent()
         {
+            _gameBackground?.LoadContent();
+
             switch (_gameState)
             {
                 case GameState.Playing:
@@ -64,6 +69,10 @@ namespace BombMan.Source.Components.GamePlay
 
         public override void Draw()
         {
+            // Always draw the background
+            _gameBackground?.Draw();
+
+            // Draw elements based on the current game state
             switch (_gameState)
             {
                 case GameState.Playing:
@@ -118,7 +127,7 @@ namespace BombMan.Source.Components.GamePlay
             _pauseMenu.OnSaveProgressRequest += () =>
             {
                 _gameWorld.SaveToFile();
-                Art.PauseSound.Play(); // mimics save sound
+                Art.PauseSound.Play(); // Mimics save sound
             };
             _pauseMenu.OnMainMenuRequest += () => MainMenuRequested?.Invoke();
         }
@@ -146,5 +155,3 @@ namespace BombMan.Source.Components.GamePlay
         }
     }
 }
-
-

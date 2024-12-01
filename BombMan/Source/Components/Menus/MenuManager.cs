@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
+using BombMan.Source.Components.GamePlay;
 
 namespace BombMan.Source.Components.Menus
 {
@@ -14,11 +15,12 @@ namespace BombMan.Source.Components.Menus
 
         private readonly Stack<BaseMenu> _menuStack;
         private BaseMenu _currentMenu;
-        private Texture2D _posterImg;
         private Song _menuBackgroundMusic;
+        private readonly BomberManPoster _bomberManPoster;
 
         public MenuManager()
         {
+            _bomberManPoster = new BomberManPoster(Vector2.Zero, Resource.ScreenWidth, Resource.ScreenHeight);
             _menuStack = new Stack<BaseMenu>();
             var mainMenu = new MainMenu();
             _menuStack.Push(mainMenu);
@@ -36,16 +38,11 @@ namespace BombMan.Source.Components.Menus
 
         public override void LoadContent()
         {
-            _posterImg = Resource.ContentManager.Load<Texture2D>("Images/BomberManPoster");
+            _bomberManPoster.LoadContent();
             _menuBackgroundMusic = Resource.ContentManager.Load<Song>("Audio/Menus/menuBackgroundMusic");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(_menuBackgroundMusic);
             _currentMenu.LoadContent();
-        }
-
-        private void DrawPosterImage()
-        {
-            Resource.SpriteBatch.Draw(_posterImg, new Vector2(0, 0), Color.White);
         }
 
         public override void Update()
@@ -55,7 +52,7 @@ namespace BombMan.Source.Components.Menus
 
         public override void Draw()
         {
-            DrawPosterImage();
+            _bomberManPoster.Draw();
             _currentMenu.Draw();
         }
 

@@ -21,7 +21,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         private const int CharacterWidth = 30;
         private const int CharacterHeight = 40;
         private const int HudHeight = 150;
-        private const int StageBackgroundPadding = 70;
+        private const int StageBackgroundPadding = 85;
 
         private const string SaveFilePath = "GameWorldSave.bombMan";
 

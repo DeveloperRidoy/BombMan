@@ -18,9 +18,12 @@ namespace BombMan.Source.Core.Shared
         public static Texture2D EnemyLvl1 { get; set; }
         public static Texture2D EnemyLvl2 { get; set; }
         public static Texture2D EnemyLvl3 { get; set; }
-        public static Texture2D BackgroundLvl1 { get; set; }
-        public static Texture2D BackgroundLvl2 { get; set; }
-        public static Texture2D BackgroundLvl3 { get; set; }
+        public static Texture2D GameBackground { get; set; }
+        public static Texture2D BomberManPoster { get; set; }
+        public static Texture2D StageBackgroundLvl1 { get; set; }
+        public static Texture2D StageBackgroundLvl2 { get; set; }
+        public static Texture2D StageBackgroundLvl3 { get; set; }
+       
         public static Texture2D BlockLvl1 { get; set; }
         public static Texture2D BlockLvl2 { get; set; }
         public static Texture2D BlockLvl3 { get; set; }
@@ -45,12 +48,14 @@ namespace BombMan.Source.Core.Shared
             Bomb = Resource.ContentManager.Load<Texture2D>("Images/Items/Bomb");
             Explosion = Resource.ContentManager.Load<Texture2D>("Images/Items/Explosion");
             HeroImages = Resource.ContentManager.Load<Texture2D>("Images/Characters/Heroes");
+            GameBackground = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/Background");
+            BomberManPoster = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BomberManPoster");
             EnemyLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl1");
             EnemyLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl2");
             EnemyLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Characters/Enemies/EnemyLvl3");
-            BackgroundLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl1");
-            BackgroundLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl2");
-            //BackgroundLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/BackgroundLvl3");
+            StageBackgroundLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/StageBackgroundLvl1");
+            StageBackgroundLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/StageBackgroundLvl2");
+            StageBackgroundLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Backgrounds/StageBackgroundLvl3");
             BlockLvl1 = Resource.ContentManager.Load<Texture2D>("Images/Blocks/Block1");
             BlockLvl2 = Resource.ContentManager.Load<Texture2D>("Images/Blocks/Block2");
             BlockLvl3 = Resource.ContentManager.Load<Texture2D>("Images/Blocks/Block3");
