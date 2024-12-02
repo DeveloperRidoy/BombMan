@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BombMan.Source.Core.IO;
+using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using BombMan.Source.Core.Shared;
 
 namespace BombMan.Source.Components.Menus
 {
@@ -18,29 +19,18 @@ namespace BombMan.Source.Components.Menus
         protected int _selectedIndex;
         protected bool _isSubMenu;
         protected string _title;
-        protected List<string> _description;
 
-        protected Texture2D _image;
-        public BaseMenu(string title, List<MenuItem> items, bool isSubMenu = false)
+        private readonly float _horizontalPadding;
+        private readonly float _verticalPadding;
+
+        public BaseMenu(string title, bool isSubMenu = false, float horizontalPadding = 120f, float verticalPadding = 30f)
         {
             _title = title;
-            _menuItems = new List<MenuItem>(items);
-            _isSubMenu = isSubMenu;
-            _selectedIndex = 0; // Default to the first menu option
-            _description = new List<string>();
-
-            if (_isSubMenu)
-            {
-                _menuItems.Insert(0, new MenuItem("Back", () => BackRequested?.Invoke()));
-            }
-        }
-
-        public BaseMenu(string title, List<string> description, bool isSubMenu = false)
-        {
-            _title = title;
-            _description = description;
             _menuItems = new List<MenuItem>();
             _isSubMenu = isSubMenu;
+            _selectedIndex = 0;
+            _horizontalPadding = horizontalPadding;
+            _verticalPadding = verticalPadding;
 
             if (_isSubMenu)
             {
@@ -48,30 +38,143 @@ namespace BombMan.Source.Components.Menus
             }
         }
 
-        public BaseMenu(string title, Texture2D image, bool isSubMenu = false)
+        public void AddMenuItem(string name, Action action)
         {
-            _title = title;
-            _description = new List<string>();
-            _menuItems = new List<MenuItem>();
-            _isSubMenu = isSubMenu;
-            _image = image;
+            _menuItems.Add(new MenuItem(name, action));
+        }
 
-            if (_isSubMenu)
+        public override void LoadContent()
+        {
+            // Load a default background texture
+            _backgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
+            _backgroundTexture.SetData(new[] { Color.White });
+
+            SetMenuItemPositions();
+        }
+
+        private void SetMenuItemPositions()
+        {
+            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
+            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
+
+            // Calculate starting Y position after the title
+            float menuStartY = (Resource.GraphicsDevice.Viewport.Height - (titleSize.Y + _menuItems.Count * (lineHeight + _verticalPadding))) / 2
+                               + titleSize.Y
+                               + _verticalPadding;
+
+            // Set each menu item's position and size
+            for (int i = 0; i < _menuItems.Count; i++)
             {
-                _menuItems.Insert(0, new MenuItem("Back", () => BackRequested?.Invoke()));
+                MenuItem item = _menuItems[i];
+                Vector2 size = Art.DefaultFont.MeasureString(item.Name);
+                Vector2 position = new(
+                    (Resource.GraphicsDevice.Viewport.Width - size.X) / 2,
+                    menuStartY + i * (lineHeight + _verticalPadding)
+                );
+
+                item.SetPosition(position, size);
             }
         }
 
-        public BaseMenu(string title, List<string> description, List<MenuItem> items, bool isSubMenu = false)
+        public override void Update()
         {
-            _title = title;
-            _description = description;
-            _menuItems = items;
-            _isSubMenu = isSubMenu;
-
-            if (_isSubMenu)
+            if (Resource.InputManager.IsEscapePressed())
             {
-                _menuItems.Insert(0, new MenuItem("Back", () => BackRequested?.Invoke()));
+                if (_isSubMenu)
+                {
+                    InvokeBackRequestedEvent();
+                }
+                else
+                {
+                    InvokeExitRequestedEvent();
+                }
+            }
+
+            if (Resource.InputManager.IsMoveUpPressed())
+            {
+                _selectedIndex = (_selectedIndex - 1 + _menuItems.Count) % _menuItems.Count;
+            }
+
+            if (Resource.InputManager.IsMoveDownPressed())
+            {
+                _selectedIndex = (_selectedIndex + 1) % _menuItems.Count;
+            }
+
+            // Update menu items
+            for (int i = 0; i < _menuItems.Count; i++)
+            {
+                var item = _menuItems[i];
+                item.IsSelected = i == _selectedIndex;
+
+                if (item.IsMouseClicked() || item.IsTapped())
+                {
+                    _selectedIndex = i;
+                    item.Action?.Invoke();
+                }
+            }
+
+            if (Resource.InputManager.IsEnterPressed())
+            {
+                _menuItems[_selectedIndex]?.Action.Invoke();
+            }
+        }
+
+        public override void Draw()
+        {
+            DrawBackground();
+            DrawMenu();
+        }
+
+        public virtual void DrawBackground()
+        {
+            // Calculate the bounds of the menu area
+            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
+            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
+
+            float menuWidth = 0f;
+            foreach (var item in _menuItems)
+            {
+                float itemWidth = Art.DefaultFont.MeasureString(item.Name).X;
+                if (itemWidth > menuWidth) menuWidth = itemWidth;
+            }
+            menuWidth += _horizontalPadding * 2;
+
+            float menuHeight = titleSize.Y + (_menuItems.Count * (lineHeight + _verticalPadding)) + _verticalPadding * 2;
+
+            // Calculate the position for the menu background
+            Vector2 menuPosition = new(
+                (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
+                (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
+            );
+
+            // Draw the semi-transparent background
+            Rectangle backgroundRectangle = new(
+                (int)(menuPosition.X),
+                (int)(menuPosition.Y),
+                (int)(menuWidth),
+                (int)(menuHeight)
+            );
+
+            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.95f);
+        }
+
+        public virtual void DrawMenu()
+        {
+            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
+
+            // Calculate the position for the title
+            Vector2 titlePosition = new(
+                (Resource.GraphicsDevice.Viewport.Width - titleSize.X) / 2,
+                (Resource.GraphicsDevice.Viewport.Height - (titleSize.Y + _menuItems.Count * (titleSize.Y + _verticalPadding))) / 2
+            );
+
+            // Draw the title
+            Resource.SpriteBatch.DrawString(Art.DefaultFont, _title, titlePosition, Color.Black);
+
+            // Draw each menu item
+            foreach (var item in _menuItems)
+            {
+                item.Draw();
             }
         }
 
@@ -93,219 +196,6 @@ namespace BombMan.Source.Components.Menus
         protected void InvokeStartGameRequestedtedEvent(bool loadGame)
         {
             StartGameRequested?.Invoke(loadGame);
-        }
-
-        public override void LoadContent()
-        {
-            // Create a 1x1 white texture for drawing the background
-            _backgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
-            _backgroundTexture.SetData(new[] { Color.White });
-        }
-
-        public override void Update()
-        {
-            // Update logic for the menu
-            if (Resource.InputManager.IsMoveUpPressed())
-            {
-                _selectedIndex = (_selectedIndex - 1 + _menuItems.Count) % _menuItems.Count;
-            }
-            if (Resource.InputManager.IsMoveDownPressed())
-            {
-                _selectedIndex = (_selectedIndex + 1) % _menuItems.Count;
-            }
-            if (Resource.InputManager.IsEnterPressed())
-            {
-                _menuItems[_selectedIndex]?.Action.Invoke();
-            }
-            if (Resource.InputManager.IsEscapePressed())
-            {
-                if (_isSubMenu)
-                {
-                    BackRequested?.Invoke();
-                }
-                else
-                {
-                    ExitRequested?.Invoke();
-                }
-            }
-        }
-
-        public override void Draw()
-        {
-            DrawBackground();
-            DrawMenu();
-        }
-
-        protected void DrawBackground()
-        {
-            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
-            float padding = 20f;
-
-            // Determine menu width based on whether description exists
-            float menuWidth = (_description != null && _description.Count > 0) ? 800f : 300f;
-
-            // Calculate the total description height for all lines
-            float descriptionHeight = 0;
-            if (_description != null && _description.Count > 0)
-            {
-                foreach (string line in _description)
-                {
-                    descriptionHeight += MeasureWrappedTextHeight(line, menuWidth); // Adjust wrapping width based on menu width
-                }
-                descriptionHeight += padding;
-            }
-
-            // Calculate total height of menu: title + menu items + description
-            float menuHeight = titleSize.Y + (_menuItems.Count * (titleSize.Y + padding)) + padding * 2 + descriptionHeight;
-
-            // Calculate the position to center the menu on the screen
-            Vector2 menuPosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
-                (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
-            );
-
-            // Draw semi-transparent background for the menu with padding
-            Rectangle backgroundRectangle = new(
-                (int)menuPosition.X - (int)padding,
-                (int)menuPosition.Y - (int)padding,
-                (int)menuWidth + (int)padding * 2,
-                (int)menuHeight + (int)padding * 2
-            );
-
-            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.95f);
-        }
-
-        protected void DrawMenu()
-        {
-            SpriteFont titleFont = Art.DefaultFont;
-            Vector2 titleSize = titleFont.MeasureString(_title);
-            float padding = 20f;
-
-            // Determine menu width based on whether description exists
-            float menuWidth = (_description != null && _description.Count > 0) ? 800f : 300f;
-
-            // Calculate the total description height for all lines
-            float descriptionHeight = 0;
-            if (_description != null && _description.Count > 0)
-            {
-                foreach (string line in _description)
-                {
-                    descriptionHeight += MeasureWrappedTextHeight(line, menuWidth); // Adjust wrapping width based on menu width
-                }
-                descriptionHeight += padding;
-            }
-
-            float menuHeight = titleSize.Y + (_menuItems.Count * (titleSize.Y + padding)) + padding * 2 + descriptionHeight;
-
-            Vector2 menuPosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
-                (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
-            );
-
-            // Draw title
-            Vector2 titlePosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - titleSize.X) / 2,
-                menuPosition.Y + padding
-            );
-            Resource.SpriteBatch.DrawString(titleFont, _title, titlePosition, Color.Black);
-
-            // Draw description text
-            if (_description != null && _description.Count > 0)
-            {
-                Vector2 descriptionPosition = new(
-                    (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
-                    titlePosition.Y + titleSize.Y + padding
-                );
-
-                foreach (string line in _description)
-                {
-                    DrawWrappedText(line, descriptionPosition, menuWidth, Color.Black);
-                    descriptionPosition.Y += MeasureWrappedTextHeight(line, menuWidth);
-                }
-
-                // Draw image after the description
-                if (_image != null)
-                {
-                    Vector2 imagePosition = new(
-                        (Resource.GraphicsDevice.Viewport.Width - _image.Width) / 2,
-                        descriptionPosition.Y + padding
-                    );
-                    Resource.SpriteBatch.Draw(_image, imagePosition, Color.White);
-                }
-            }
-
-            // Draw menu options
-            float startY = titlePosition.Y + titleSize.Y + padding + descriptionHeight;
-            for (int i = 0; i < _menuItems.Count; i++)
-            {
-                string option = _menuItems[i]?.Name;
-                Vector2 optionSize = Art.DefaultFont.MeasureString(option);
-                Vector2 optionPosition = new(
-                    (Resource.GraphicsDevice.Viewport.Width - optionSize.X) / 2,
-                    startY + i * (optionSize.Y + padding)
-                );
-
-                // Draw background for selected option
-                if (i == _selectedIndex)
-                {
-                    Resource.SpriteBatch.Draw(_backgroundTexture, new Rectangle((int)optionPosition.X - 10, (int)optionPosition.Y - 5, (int)optionSize.X + 20, (int)optionSize.Y + 10), Color.Orange);
-                    Resource.SpriteBatch.DrawString(Art.DefaultFont, option, optionPosition, Color.White);
-                }
-                else
-                {
-                    Resource.SpriteBatch.DrawString(Art.DefaultFont, option, optionPosition, Color.Black);
-                }
-            }
-        }
-
-        private static float MeasureWrappedTextHeight(string text, float maxWidth)
-        {
-            string[] words = text.Split(' ');
-            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
-            float currentLineWidth = 0f;
-            float totalHeight = lineHeight;
-
-            foreach (string word in words)
-            {
-                Vector2 wordSize = Art.DefaultFont.MeasureString(word + " ");
-                if (currentLineWidth + wordSize.X > maxWidth)
-                {
-                    totalHeight += lineHeight;
-                    currentLineWidth = wordSize.X;
-                }
-                else
-                {
-                    currentLineWidth += wordSize.X;
-                }
-            }
-
-            return totalHeight;
-        }
-
-        private static void DrawWrappedText(string text, Vector2 position, float maxWidth, Color color)
-        {
-            string[] words = text.Split(' ');
-            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
-            float currentLineWidth = 0f;
-            Vector2 currentPosition = position;
-
-            foreach (string word in words)
-            {
-                Vector2 wordSize = Art.DefaultFont.MeasureString(word + " ");
-                if (currentLineWidth + wordSize.X > maxWidth)
-                {
-                    currentPosition.Y += lineHeight;
-                    currentPosition.X = position.X;
-                    currentLineWidth = wordSize.X;
-                }
-                else
-                {
-                    currentLineWidth += wordSize.X;
-                }
-
-                Resource.SpriteBatch.DrawString(Art.DefaultFont, word + " ", currentPosition, color);
-                currentPosition.X += wordSize.X;
-            }
         }
     }
 }

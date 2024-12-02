@@ -1,36 +1,15 @@
-﻿using BombMan.Source.Core.Shared;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-
-namespace BombMan.Source.Components.Menus
+﻿namespace BombMan.Source.Components.Menus
 {
-
     public class MainMenu : BaseMenu
     {
-        public MainMenu() : base(
-            "Main Menu",
-            new List<MenuItem> {
-                        new ("New Game", null),
-                        new ("Load Game", null),
-                        new ("About", null),
-                        new ("Help", null),
-                        new ("High Score", null),
-                        new ("Exit", null),
-            }
-        )
+        public MainMenu() : base("Main Menu")
         {
-            _menuItems[0].Action = StartNewGame;
-            _menuItems[1].Action = LoadGame;
-            _menuItems[2].Action = ShowAbout;
-            _menuItems[3].Action = ShowHelp;
-            _menuItems[4].Action = ShowHighScore;
-            _menuItems[5].Action = ExitGame;
-        }
-
-        public override void LoadContent()
-        {
-            base.LoadContent();
+            AddMenuItem("New Game", StartNewGame);
+            AddMenuItem("Load Game", LoadGame);
+            AddMenuItem("About", ShowAbout);
+            AddMenuItem("Help", ShowHelp);
+            AddMenuItem("High Score", ShowHighScore);
+            AddMenuItem("Exit", ExitGame);
         }
 
         private void StartNewGame()

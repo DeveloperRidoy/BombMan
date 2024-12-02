@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BombMan.Source.Core.Shared
 {
@@ -31,6 +27,7 @@ namespace BombMan.Source.Core.Shared
         public static Texture2D AboutImage { get; set; }
         public static Texture2D HelpImage { get; set; }
         public static Texture2D HealthIcon { get; set; }
+        public static Texture2D WhiteBackgroundTexture { get; set; }
 
         public static SoundEffect ExplosionSound { get; set; }
         public static SoundEffect GameOverSound { get; set; }
@@ -41,6 +38,9 @@ namespace BombMan.Source.Core.Shared
         public static Song Map2Bgm { get; set; }
         public static Song HighScoresBgm { get; set; }
 
+        // for controller 
+        public static Texture2D ControllerDefault { get; set; }
+        public static Texture2D ControllerActive { get; set; }
 
         public static void LoadContent()
         {
@@ -63,6 +63,8 @@ namespace BombMan.Source.Core.Shared
             AboutImage = Resource.ContentManager.Load<Texture2D>("Images/About");
             HelpImage = Resource.ContentManager.Load<Texture2D>("Images/Help");
             HealthIcon = Resource.ContentManager.Load<Texture2D>("Images/HeartIcon");
+            WhiteBackgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
+            WhiteBackgroundTexture.SetData(new[] { Color.White });
 
             ExplosionSound = Resource.ContentManager.Load<SoundEffect>("Audio/Bombs/ExplosionSound");
             GameOverSound = Resource.ContentManager.Load<SoundEffect>("Audio/GameOverSound");
@@ -72,6 +74,10 @@ namespace BombMan.Source.Core.Shared
             Map1Bgm = Resource.ContentManager.Load<Song>("Audio/Map1");
             Map2Bgm = Resource.ContentManager.Load<Song>("Audio/Map2");
             HighScoresBgm = Resource.ContentManager.Load<Song>("Audio/HighScoresBgm");
+
+            // for controller
+            ControllerDefault = Resource.ContentManager.Load<Texture2D>("Images/Controller/ControllerImg_Default");
+            ControllerActive = Resource.ContentManager.Load<Texture2D>("Images/Controller/ControllerImg_Active");
         }
     }
 }

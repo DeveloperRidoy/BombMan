@@ -109,9 +109,9 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         private void InitializeDefaultWorld()
         {
             PlaceFloors();
-            PlaceBlocks();
             PlaceHero();
             PlaceEnemies();
+            PlaceBlocks();
         }
 
         private void PlaceFloors()
@@ -189,29 +189,43 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             for (int i = 0; i < numEnemies; i++)
             {
                 int x, y;
-                do
+                int attempts = 0;
+                const int maxAttempts = 100; // Prevent infinite loops by limiting attempts
+
+                while (attempts < maxAttempts)
                 {
                     x = random.Next(WorldWidth);
                     y = random.Next(WorldHeight);
 
                     Vector2 enemyPosition = new(
-                        x * TileSize + StageBackgroundPadding,
+                        x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
                         y * TileSize + HudHeight + StageBackgroundPadding
                     );
 
-                    if (Vector2.Distance(enemyPosition, _hero.Position) < SafeZoneRadius ||
-                        _blocks.Exists(b => b.Position == enemyPosition) ||
-                        _enemies.Exists(e => e.Position == enemyPosition))
+                    Rectangle enemyBounds = new ((int)enemyPosition.X, (int)enemyPosition.Y, CharacterWidth, CharacterHeight);
+
+                    // Ensure no overlap with hero, blocks, or other enemies
+                    bool isPositionValid = Vector2.Distance(enemyPosition, _hero.Position) >= SafeZoneRadius &&
+                                           !_blocks.Exists(b => b.GetBoundingRectangle().Intersects(enemyBounds)) &&
+                                           !_enemies.Exists(e => e.GetBoundingRectangle().Intersects(enemyBounds));
+
+                    if (isPositionValid)
                     {
-                        continue;
+                        _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
+                        break;
                     }
 
-                    _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
-                    break;
+                    attempts++;
+                }
 
-                } while (true);
+                if (attempts >= maxAttempts)
+                {
+                    // Log or handle the case where an enemy could not be placed
+                    Console.WriteLine($"Failed to place enemy {i + 1} after {maxAttempts} attempts.");
+                }
             }
         }
+
 
 
 
@@ -283,12 +297,13 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             Random random = new();
             foreach (var corner in _corners)
             {
-                // Check if the corner is free to spawn
+                // Ensure the corner is free to spawn
                 if (!_blocks.Exists(b => b.GetBoundingRectangle().Contains(corner)) &&
                     !_enemies.Exists(e => e.GetBoundingRectangle().Contains(corner)))
                 {
-                    // Alternate between Level 1 and Level 2 enemies
                     Enemy newEnemy;
+
+                    // Alternate between Level 1 and Level 2 enemies
                     if (random.Next(2) == 0)
                     {
                         newEnemy = new EnemyLvl1(corner, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize);
@@ -298,8 +313,13 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                         newEnemy = new EnemyLvl2(corner, CharacterWidth, CharacterHeight, 0.5f, HudHeight, TileSize, _hero);
                     }
 
-                    newEnemy.LoadContent();
-                    _enemies.Add(newEnemy);
+                    // Verify the enemy does not intersect with any blocks
+                    if (!_blocks.Exists(b => b.GetBoundingRectangle().Intersects(new Rectangle(
+                        (int)corner.X, (int)corner.Y, CharacterWidth, CharacterHeight))))
+                    {
+                        newEnemy.LoadContent();
+                        _enemies.Add(newEnemy);
+                    }
                 }
             }
         }

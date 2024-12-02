@@ -2,19 +2,20 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System.Collections.Generic;
+using System;
 
 namespace BombMan.Source.Components.Menus
 {
-    public class AboutMenu : BaseMenu 
+    public class AboutMenu : BaseMenu
     {
-
+        private Texture2D _image;
         private Song CreditsSong { get; set; }
+        private readonly float _maxImageHeightPercentage = 0.5f; // Image height should not exceed 20% of the screen height
+
         public AboutMenu() : base(
             "About",
-            new List<string>(), // Explicitly specify the type to resolve ambiguity
-            true  // Indicates this is a submenu
-            )
+            true // Indicates this is a submenu
+        )
         {
         }
 
@@ -25,73 +26,101 @@ namespace BombMan.Source.Components.Menus
             CreditsSong = Art.CreditsSong;
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(CreditsSong);
+            SetMenuItemAndImagePositions();
+        }
+
+        private void SetMenuItemAndImagePositions()
+        {
+            Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
+            float lineHeight = Art.DefaultFont.MeasureString("A").Y;
+            float padding = 30f; // Reduced padding for tighter layout
+
+            // Calculate total height required
+            float imageHeight = Math.Min(_image.Height, Resource.GraphicsDevice.Viewport.Height * _maxImageHeightPercentage);
+            float imageWidth = _image.Width * (imageHeight / _image.Height); // Maintain aspect ratio
+            float totalMenuHeight = titleSize.Y + (_menuItems.Count * (lineHeight + padding)) + imageHeight + (padding * 3);
+
+            // Center the content vertically
+            float startY = (Resource.GraphicsDevice.Viewport.Height - totalMenuHeight) / 2;
+
+            // Position the title
+            float currentY = startY;
+            _titlePosition = new Vector2(
+                (Resource.GraphicsDevice.Viewport.Width - titleSize.X) / 2,
+                currentY
+            );
+            currentY += titleSize.Y + padding;
+
+            // Position the menu items
+            for (int i = 0; i < _menuItems.Count; i++)
+            {
+                MenuItem item = _menuItems[i];
+                Vector2 size = Art.DefaultFont.MeasureString(item.Name);
+                Vector2 position = new(
+                    (Resource.GraphicsDevice.Viewport.Width - size.X) / 2,
+                    currentY
+                );
+                item.SetPosition(position, size);
+                currentY += lineHeight + padding;
+            }
+
+            // Position the image
+            _imagePosition = new Vector2(
+                (Resource.GraphicsDevice.Viewport.Width - imageWidth) / 2,
+                currentY + padding
+            );
+            _imageSize = new Vector2(imageWidth, imageHeight);
+        }
+
+        private Vector2 _titlePosition;
+        private Vector2 _imagePosition;
+        private Vector2 _imageSize;
+
+        public override void DrawBackground()
+        {
+            // Define padding
+            float verticalPadding = 20f; // Padding for top and bottom
+            float horizontalPadding = 30f; // Padding for left and right
+
+            // Calculate the bounds of the menu area
+            float menuWidth = Math.Max(400f, _imageSize.X) + horizontalPadding * 2; // Add horizontal padding
+            float menuHeight = _titlePosition.Y + _imageSize.Y + (_menuItems.Count * (Art.DefaultFont.MeasureString("A").Y + verticalPadding)) + (verticalPadding * 2);
+
+            // Center the background
+            Vector2 menuPosition = new(
+                (Resource.GraphicsDevice.Viewport.Width - menuWidth) / 2,
+                (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
+            );
+
+            // Draw the semi-transparent background
+            Rectangle backgroundRectangle = new(
+                (int)(menuPosition.X),
+                (int)(menuPosition.Y),
+                (int)menuWidth,
+                (int)menuHeight
+            );
+
+            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.9f);
         }
 
 
-        public override void Draw()
+        public override void DrawMenu()
         {
-            // Get font for drawing
-            SpriteFont font = Art.DefaultFont;
-
-            // Measure the size of the title and BACK button text
-            Vector2 titleSize = font.MeasureString("ABOUT");
-            Vector2 buttonSize = font.MeasureString("BACK");
-
-            // Image scale
-            float scale = 0.25f; // Adjust scale as needed
-            Vector2 scaledSize = new(_image.Width * scale, _image.Height * scale);
-
-            // Calculate positions
-            Vector2 titlePosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - titleSize.X) / 2, // Center horizontally
-                150 // Fixed Y-coordinate for the title (adjust as needed)
-            );
-            Vector2 buttonPosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - buttonSize.X) / 2, // Center horizontally
-                titlePosition.Y + titleSize.Y + 20 // Space below the title for the BACK button
-            );
-            Vector2 imagePosition = new(
-                (Resource.GraphicsDevice.Viewport.Width - scaledSize.X) / 2, // Center horizontally
-                buttonPosition.Y + buttonSize.Y + 50 // Space below the BACK button for the image
-            );
-
-            // Calculate the total height for the semi-transparent background
-            float totalHeight = (imagePosition.Y + scaledSize.Y) - titlePosition.Y + 40;
-
-            // Draw the semi-transparent background that includes the title, BACK button, and image
-            Rectangle backgroundRectangle = new(
-                (int)((Resource.GraphicsDevice.Viewport.Width - scaledSize.X - 40) / 2), // Add padding on both sides
-                (int)titlePosition.Y - 20, // Padding above the title
-                (int)(scaledSize.X + 40),  // Width includes padding
-                (int)(totalHeight)         // Total height from the title to the image
-            );
-            Resource.SpriteBatch.Draw(_backgroundTexture, backgroundRectangle, Color.White * 0.95f);
-
             // Draw the title
-            Resource.SpriteBatch.DrawString(font, "ABOUT", titlePosition, Color.Black);
+            Resource.SpriteBatch.DrawString(Art.DefaultFont, _title, _titlePosition, Color.Black);
 
-            // Draw the orange BACK button background
-            Rectangle buttonBackground = new(
-                (int)buttonPosition.X - 20, // Add padding to the background
-                (int)buttonPosition.Y - 5,
-                (int)(buttonSize.X + 40),
-                (int)(buttonSize.Y + 10)
-            );
-            Resource.SpriteBatch.Draw(_backgroundTexture, buttonBackground, Color.Orange);
+            // Draw each menu item
+            foreach (var item in _menuItems)
+            {
+                item.Draw();
+            }
 
-            // Draw the BACK text in white, centered on the orange background
-            Vector2 textPosition = new(
-                buttonBackground.X + (buttonBackground.Width - buttonSize.X) / 2,
-                buttonBackground.Y + (buttonBackground.Height - buttonSize.Y) / 2
-            );
-            Resource.SpriteBatch.DrawString(font, "BACK", textPosition, Color.White);
-
-            // Draw the About image
+            // Draw the image
             if (_image != null)
             {
-                Resource.SpriteBatch.Draw(_image, imagePosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                Rectangle imageRectangle = new((int)_imagePosition.X, (int)_imagePosition.Y, (int)_imageSize.X, (int)_imageSize.Y);
+                Resource.SpriteBatch.Draw(_image, imageRectangle, Color.White);
             }
         }
     }
 }
-

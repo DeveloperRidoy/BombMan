@@ -11,21 +11,12 @@ namespace BombMan.Source.Components.Menus
         public event Action OnSaveProgressRequest;
         public event Action OnMainMenuRequest;
 
-        public PauseMenu() : base(
-            "Pause Menu",
-            new List<MenuItem> {
-                new ("Resume", null),
-                new ("Restart", null),
-                new ("Save Progress", null),
-                new ("Main Menu", null),
-            },
-            false
-        )
+        public PauseMenu() : base("Pause Menu")
         {
-            _menuItems[0].Action = () => OnResumeRequest();
-            _menuItems[1].Action = () => OnRestartRequest();
-            _menuItems[2].Action = () => OnSaveProgressRequest();
-            _menuItems[3].Action = () => OnMainMenuRequest();
+            AddMenuItem("Resume", () => OnResumeRequest?.Invoke());
+            AddMenuItem("Restart", () => OnRestartRequest?.Invoke());
+            AddMenuItem("Save Progress", () => OnSaveProgressRequest?.Invoke());
+            AddMenuItem("Main Menu", () => OnMainMenuRequest?.Invoke());
         }
 
         public override void LoadContent()

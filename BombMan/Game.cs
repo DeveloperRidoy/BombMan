@@ -2,7 +2,7 @@
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using BombMan.Source.Core.IO;
 
 namespace BombMan
 {
