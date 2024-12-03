@@ -41,6 +41,8 @@ namespace BombMan.Source.Core.Shared
         // for controller 
         public static Texture2D ControllerDefault { get; set; }
         public static Texture2D ControllerActive { get; set; }
+        public static Texture2D BackBtnDefault { get; set; }
+        public static Texture2D BackBtnActive { get; set; }
 
         public static void LoadContent()
         {
@@ -78,6 +80,8 @@ namespace BombMan.Source.Core.Shared
             // for controller
             ControllerDefault = Resource.ContentManager.Load<Texture2D>("Images/Controller/ControllerImg_Default");
             ControllerActive = Resource.ContentManager.Load<Texture2D>("Images/Controller/ControllerImg_Active");
+            BackBtnDefault = Resource.ContentManager.Load<Texture2D>("Images/Controller/BackBtnDefault");
+            BackBtnActive = Resource.ContentManager.Load<Texture2D>("Images/Controller/BackBtnActive");
         }
     }
 }

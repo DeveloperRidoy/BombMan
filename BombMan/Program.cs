@@ -1,3 +1,3 @@
 ﻿
-using var game = new BombMan.Game();
+using var game = new BombMan.BombMan();
 game.Run();

@@ -3,28 +3,55 @@ using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BombMan.Source.Core.IO;
+using Microsoft.Xna.Framework.Input.Touch;
+using System.Runtime.InteropServices;
 
 namespace BombMan
 {
-    public class Game : Microsoft.Xna.Framework.Game
+    public class BombMan : Game
     {
         private readonly GraphicsDeviceManager _graphics;
         private GameManager _gameManager;
 
-        public Game()
+        public BombMan(Platform platform = Platform.Windows)
         {
+            Resource.Platform = platform;
+
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1280; 
+            if (Resource.Platform == Platform.Android || Resource.Platform == Platform.iOS)
+            {
+                IsMouseVisible = false;
+            }
+            else
+            {
+                SetWindowSize();
+
+                IsMouseVisible = true;
+            }
+
+            _graphics.ApplyChanges();
+        }
+
+        private void SetWindowSize()
+        {
+
+            _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 1080;
-
             _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
         {
+            
+            if (Resource.Platform == Platform.Android || Resource.Platform == Platform.iOS)
+            {
+                // Enable touch input
+                TouchPanel.EnabledGestures = GestureType.Tap | GestureType.DoubleTap
+                    | GestureType.Flick | GestureType.FreeDrag;
+            }
+
             Resource.GraphicsDevice = GraphicsDevice;
             Resource.ContentManager = Content;
             Resource.InputManager = new InputManager();

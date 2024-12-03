@@ -28,6 +28,11 @@ namespace BombMan.Source.Components.GamePlay
         {
             _gameWorld = new GameWorld(loadGame); // Automatically load or initialize the game world
             _gameWorld.OnGameOver += HandleGameOver;
+            _gameWorld.OnPauseMenuRequest += () => {
+                _gameState = GameState.Paused;
+                MediaPlayer.Pause(); // Pause the game music
+                InitializePauseMenu();
+            };
             _gameBackground = new GameBackground(Vector2.Zero, Resource.ScreenWidth, Resource.ScreenHeight); // Assuming screen dimensions
         }
 
@@ -121,6 +126,12 @@ namespace BombMan.Source.Components.GamePlay
                 _pauseMenu = null;
                 _gameWorld = new GameWorld(false); // Reset to default world on restart
                 _gameWorld.OnGameOver += HandleGameOver;
+                _gameWorld.OnPauseMenuRequest += () =>
+                {
+                    _gameState = GameState.Paused;
+                    MediaPlayer.Pause(); // Pause the game music
+                    InitializePauseMenu();
+                };
                 _gameWorld.LoadContent();
             };
 
