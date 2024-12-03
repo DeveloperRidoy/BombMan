@@ -100,7 +100,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 Resource.ScreenHeight - Controller.GetWidth() - 70
             );
             Debug.Write($"{controllerPosition}, {Resource.ScreenWidth}, {Resource.ScreenHeight}, {Controller.Width}, {Controller.Height}" );
-            _controller = new Controller(controllerPosition);
+            //_controller = new Controller(controllerPosition);
         }
 
         // Method to initialize the correct stage background based on the level
@@ -272,15 +272,15 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         public void Update()
         {
             // Update the controller
-            _controller.Update();
+           // _controller.Update();
 
-            if (_controller.IsBackPressed())
-            {
-                OnPauseMenuRequest?.Invoke();
-            }
+            //if (_controller.IsBackPressed())
+            //{
+            //    OnPauseMenuRequest?.Invoke();
+            //}
 
             Vector2 previousPosition = _hero.Position;
-            _hero.Update(_controller);
+            _hero.Update(); // another version with controller exists
             CheckHeroCollisionWithBlocks(previousPosition);
             EnsureCharactersStaysWithinBounds();
             UpdateEnemies();
@@ -548,7 +548,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _hero.LoadContent();
             _hud.LoadContent();
             _stageBackground.LoadContent();
-            _controller.LoadContent();
+           // _controller.LoadContent();
         }
 
 
@@ -561,7 +561,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             DrawEnemies();
             _hero.Draw();
             _hud.Draw();
-            _controller.Draw();
+          //  _controller.Draw();
         }
 
         private void DrawFloors()

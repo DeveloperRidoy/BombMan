@@ -76,7 +76,6 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
             // Handle input
             Vector2 input = Vector2.Zero;
 
-            // Keyboard and controller integration
             if (controller.IsUpPressed() || Resource.InputManager.IsMoveUp()) input.Y -= 1;
             if (controller.IsDownPressed() || Resource.InputManager.IsMoveDown()) input.Y += 1;
             if (controller.IsLeftPressed() || Resource.InputManager.IsMoveLeft()) input.X -= 1;
@@ -84,6 +83,65 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
 
             // Detect bomb placement
             if (controller.IsEnterPressed() || Resource.InputManager.IsEnterPressed() || Resource.InputManager.IsSpacePressed())
+            {
+                OnPlaceBomb?.Invoke(Position, this);
+            }
+
+            // Normalize input for consistent diagonal movement
+            if (input.Length() > 0)
+            {
+                input.Normalize();
+                SetVelocity(input);
+            }
+            else
+            {
+                Stop();
+                SetNeutralState();
+            }
+
+            // Update hero state based on input
+            if (input != Vector2.Zero)
+            {
+                _idleTime = TimeSpan.Zero;
+                _animationTime += Resource.UpdateGameTime.ElapsedGameTime;
+
+                if (_animationTime.TotalSeconds > AnimationInterval)
+                {
+                    _animationTime = TimeSpan.Zero;
+                    UpdateAnimationState(input);
+                }
+            }
+            else
+            {
+                _idleTime += Resource.UpdateGameTime.ElapsedGameTime;
+
+                if (_idleTime.TotalSeconds > IdleThreshold)
+                {
+                    _currentState = HeroState.MovingDownNeutral;
+                }
+            }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            // Decrement the collision cooldown timer
+            if (_collisionCooldown > TimeSpan.Zero)
+            {
+                _collisionCooldown -= Resource.UpdateGameTime.ElapsedGameTime;
+            }
+
+            // Handle input
+            Vector2 input = Vector2.Zero;
+
+            if (Resource.InputManager.IsMoveUp()) input.Y -= 1;
+            if (Resource.InputManager.IsMoveDown()) input.Y += 1;
+            if (Resource.InputManager.IsMoveLeft()) input.X -= 1;
+            if (Resource.InputManager.IsMoveRight()) input.X += 1;
+
+            // Detect bomb placement
+            if (Resource.InputManager.IsEnterPressed() || Resource.InputManager.IsSpacePressed())
             {
                 OnPlaceBomb?.Invoke(Position, this);
             }
