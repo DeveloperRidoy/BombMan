@@ -1,27 +1,79 @@
-﻿using BombMan.Source.Core.Shared;
+﻿using BombMan.Source.Components;
+using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
-using BombMan.Source.Components;
+using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace BombMan.Source.Core.IO
 {
     public class Controller : BaseComponent
     {
-        private readonly ControllerButton _upButton;
-        private readonly ControllerButton _downButton;
-        private readonly ControllerButton _leftButton;
-        private readonly ControllerButton _rightButton;
-        private readonly ControllerButton _enterButton;
-        private readonly ControllerButton _backButton;
+        public static int Width { get; private set; }
+        public static int Height { get; private set; }
 
-        public Controller()
+        public readonly ControllerButton _upButton;
+        public readonly ControllerButton _downButton;
+        public readonly ControllerButton _leftButton;
+        public readonly ControllerButton _rightButton;
+        public readonly ControllerButton _enterButton;
+        public readonly ControllerButton _backButton;
+
+        // Define button dimensions and layout
+        private readonly static int buttonSize = 30;  // Standard button size
+        private readonly static int spacing = 5;    // Spacing between buttons
+        private readonly static int sideOffset = 60; // Horizontal/vertical offset for action buttons
+
+        public Controller(Vector2 basePosition)
         {
-            _upButton = new ControllerButton(new Vector2(100, 200), 50, 50, Art.ControllerDefault, Art.ControllerActive);
-            _downButton = new ControllerButton(new Vector2(100, 300), 50, 50, Art.ControllerDefault, Art.ControllerActive);
-            _leftButton = new ControllerButton(new Vector2(50, 250), 50, 50, Art.ControllerDefault, Art.ControllerActive);
-            _rightButton = new ControllerButton(new Vector2(150, 250), 50, 50, Art.ControllerDefault, Art.ControllerActive);
-            _enterButton = new ControllerButton(new Vector2(200, 300), 50, 50, Art.ControllerDefault, Art.ControllerActive);
-            _backButton = new ControllerButton(new Vector2(10, 10), 50, 50, Art.ControllerDefault, Art.ControllerActive);
+
+            // Dynamically calculate the controller width and height based on layout
+            Width = GetWidth(); // Account for Enter button width
+            Height = GetHeight();   // Account for Back button height
+
+            // Define source rectangles for button images
+            Rectangle upSource = new(176, 0, 158, 158);
+            Rectangle downSource = new(176, 394, 158, 158);
+            Rectangle leftSource = new(0, 176, 158, 158);
+            Rectangle rightSource = new(394, 178, 158, 158);
+            Rectangle enterSource = new(156, 156, 200, 200);
+            Rectangle backSource = new(0, 0, Art.BackBtnActive.Width, Art.BackBtnActive.Height);
+
+            // Positioning buttons in a standard layout
+            _upButton = new ControllerButton(
+                basePosition + new Vector2(buttonSize + spacing, spacing),
+                buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, upSource, false, Keys.W, Keys.Up
+            );
+
+            _downButton = new ControllerButton(
+                basePosition + new Vector2(buttonSize + spacing, (buttonSize + spacing) * 2),
+                buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, downSource, false, Keys.S, Keys.Down
+            );
+
+            _leftButton = new ControllerButton(
+                basePosition + new Vector2(spacing, buttonSize + spacing),
+                buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, leftSource, false, Keys.A, Keys.Left
+            );
+
+            _rightButton = new ControllerButton(
+                basePosition + new Vector2((buttonSize + spacing) * 2, buttonSize + spacing),
+                buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, rightSource, false, Keys.D, Keys.Right
+            );
+
+            // Place Enter button to the right of the D-Pad
+            _enterButton = new ControllerButton(
+                basePosition + new Vector2((buttonSize + spacing) * 3, buttonSize),
+                buttonSize + 10, buttonSize + 10, Art.ControllerDefault, Art.ControllerActive, enterSource, true, Keys.Enter, Keys.Space
+            );
+
+            // Place Back button below and slightly left of the Enter button
+            _backButton = new ControllerButton(
+                basePosition + new Vector2((buttonSize + spacing) * 3 - sideOffset / 3, buttonSize + spacing + sideOffset / 2),
+                buttonSize, buttonSize, Art.BackBtnDefault, Art.BackBtnActive, backSource, true, Keys.Escape
+            );
         }
+
+        public static int GetWidth() => (buttonSize + spacing) * 3 + (buttonSize + 10);
+        public static int GetHeight() => (buttonSize + spacing) * 3 + sideOffset / 2;
 
         public override void LoadContent()
         {

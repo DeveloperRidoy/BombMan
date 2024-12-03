@@ -5,104 +5,109 @@ namespace BombMan.Source.Core.IO
 {
     public class InputManager
     {
-        private KeyboardState _currentKeyState;
-        private KeyboardState _previousKeyState;
+        public KeyboardState CurrentKeyState;
+        public KeyboardState PreviousKeyState;
 
-        private MouseState _currentMouseState;
-        private MouseState _previousMouseState;
+        public MouseState CurrentMouseState;
+        public MouseState PreviousMouseState;
 
         public InputManager() { }
 
         public void Update()
         {
-            _previousKeyState = _currentKeyState;
-            _currentKeyState = Keyboard.GetState();
+            PreviousKeyState = CurrentKeyState;
+            CurrentKeyState = Keyboard.GetState();
 
-            _previousMouseState = _currentMouseState;
-            _currentMouseState = Mouse.GetState();
+            PreviousMouseState = CurrentMouseState;
+            CurrentMouseState = Mouse.GetState();
         }
 
-        public Vector2 PreviousMousePosition => new(_previousMouseState.X, _previousMouseState.Y);
-        public Vector2 CurrentMousePosition => new(_currentMouseState.X, _currentMouseState.Y);
+        public Vector2 PreviousMousePosition => new(PreviousMouseState.X, PreviousMouseState.Y);
+        public Vector2 CurrentMousePosition => new(CurrentMouseState.X, CurrentMouseState.Y);
 
         public bool IsLeftMouseButtonClicked ()
         {
-            return _currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released;
+            return CurrentMouseState.LeftButton == ButtonState.Pressed && PreviousMouseState.LeftButton == ButtonState.Released;
+        }
+
+        public bool IsLeftMouseButtonPressed()
+        {
+            return CurrentMouseState.LeftButton == ButtonState.Pressed;
         }
 
         public bool IsMoveUp()
         {
-            return _currentKeyState.IsKeyDown(Keys.W) || _currentKeyState.IsKeyDown(Keys.Up);
+            return CurrentKeyState.IsKeyDown(Keys.W) || CurrentKeyState.IsKeyDown(Keys.Up);
         }
 
         public bool IsMoveDown()
         {
-            return _currentKeyState.IsKeyDown(Keys.S) || _currentKeyState.IsKeyDown(Keys.Down);
+            return CurrentKeyState.IsKeyDown(Keys.S) || CurrentKeyState.IsKeyDown(Keys.Down);
         }
 
         public bool IsMoveLeft()
         {
-            return _currentKeyState.IsKeyDown(Keys.A) || _currentKeyState.IsKeyDown(Keys.Left);
+            return CurrentKeyState.IsKeyDown(Keys.A) || CurrentKeyState.IsKeyDown(Keys.Left);
         }
 
         public bool IsMoveRight()
         {
-            return _currentKeyState.IsKeyDown(Keys.D) || _currentKeyState.IsKeyDown(Keys.Right);
+            return CurrentKeyState.IsKeyDown(Keys.D) || CurrentKeyState.IsKeyDown(Keys.Right);
         }
 
         public bool IsEnter()
         {
-            return _currentKeyState.IsKeyDown(Keys.Enter);
+            return CurrentKeyState.IsKeyDown(Keys.Enter);
         }
 
         public bool IsPause()
         {
-            return _currentKeyState.IsKeyDown(Keys.P) && _previousKeyState.IsKeyUp(Keys.P);
+            return CurrentKeyState.IsKeyDown(Keys.P) && PreviousKeyState.IsKeyUp(Keys.P);
         }
 
         public bool IsEscape()
         {
-            return _currentKeyState.IsKeyDown(Keys.Escape);
+            return CurrentKeyState.IsKeyDown(Keys.Escape);
         }
 
         public bool IsSpace()
         {
-            return _currentKeyState.IsKeyDown(Keys.Space);
+            return CurrentKeyState.IsKeyDown(Keys.Space);
         }
 
         public bool IsEscapePressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.Escape) && _previousKeyState.IsKeyUp(Keys.Escape);
+            return CurrentKeyState.IsKeyDown(Keys.Escape) && PreviousKeyState.IsKeyUp(Keys.Escape);
         }
 
         public bool IsMoveUpPressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.W) && _previousKeyState.IsKeyUp(Keys.W) || _currentKeyState.IsKeyDown(Keys.Up) && _previousKeyState.IsKeyUp(Keys.Up);
+            return CurrentKeyState.IsKeyDown(Keys.W) && PreviousKeyState.IsKeyUp(Keys.W) || CurrentKeyState.IsKeyDown(Keys.Up) && PreviousKeyState.IsKeyUp(Keys.Up);
         }
 
         public bool IsMoveDownPressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.S) && _previousKeyState.IsKeyUp(Keys.S) || _currentKeyState.IsKeyDown(Keys.Down) && _previousKeyState.IsKeyUp(Keys.Down);
+            return CurrentKeyState.IsKeyDown(Keys.S) && PreviousKeyState.IsKeyUp(Keys.S) || CurrentKeyState.IsKeyDown(Keys.Down) && PreviousKeyState.IsKeyUp(Keys.Down);
         }
 
         public bool IsMoveLeftPressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.A) && _previousKeyState.IsKeyUp(Keys.A) || _currentKeyState.IsKeyDown(Keys.Left) && _previousKeyState.IsKeyUp(Keys.Left);
+            return CurrentKeyState.IsKeyDown(Keys.A) && PreviousKeyState.IsKeyUp(Keys.A) || CurrentKeyState.IsKeyDown(Keys.Left) && PreviousKeyState.IsKeyUp(Keys.Left);
         }
 
         public bool IsMoveRightPressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.D) && _previousKeyState.IsKeyUp(Keys.D) || _currentKeyState.IsKeyDown(Keys.Right) && _previousKeyState.IsKeyUp(Keys.Right);
+            return CurrentKeyState.IsKeyDown(Keys.D) && PreviousKeyState.IsKeyUp(Keys.D) || CurrentKeyState.IsKeyDown(Keys.Right) && PreviousKeyState.IsKeyUp(Keys.Right);
         }
 
         public bool IsEnterPressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.Enter) && _previousKeyState.IsKeyUp(Keys.Enter);
+            return CurrentKeyState.IsKeyDown(Keys.Enter) && PreviousKeyState.IsKeyUp(Keys.Enter);
         }
 
         public bool IsSpacePressed()
         {
-            return _currentKeyState.IsKeyDown(Keys.Space) && _previousKeyState.IsKeyUp(Keys.Space);
+            return CurrentKeyState.IsKeyDown(Keys.Space) && PreviousKeyState.IsKeyUp(Keys.Space);
         }
     }
 }

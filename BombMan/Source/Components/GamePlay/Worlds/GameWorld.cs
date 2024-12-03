@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using BombMan.Source.Components.GamePlay.Characters.Enemies;
 using BombMan.Source.Components.GamePlay.Characters.Heroes;
 using BombMan.Source.Components.GamePlay.Items;
 using BombMan.Source.Components.GamePlay.Objects;
+using BombMan.Source.Core.IO;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
@@ -15,6 +17,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
     public partial class GameWorld
     {
         public event Action<int, int, bool> OnGameOver;
+        public event Action OnPauseMenuRequest;
         private const int WorldWidth = 8;
         private const int WorldHeight = 8;
         private const int TileSize = 64;
@@ -35,6 +38,8 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         private bool _shouldClearBombs = false;
 
         private const int SafeZoneRadius = TileSize * 2; // Blocks and enemies won't spawn within 2 tiles of the hero
+
+        private Controller _controller;
 
         public int Level { get; private set; } = 1;
         public int Score { get; private set; } = 0;
@@ -64,11 +69,11 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
             _corners = new[]
             {
-        new Vector2(StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
-        new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
-        new Vector2(StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding),
-        new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding)
-    };
+                new Vector2(StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
+                new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, HudHeight + StageBackgroundPadding),
+                new Vector2(StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding),
+                new Vector2(WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding)
+            };
 
             if (loadGame && File.Exists(SaveFilePath))
             {
@@ -83,10 +88,20 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _hero.OnPlaceBomb += PlaceBombAtPosition;
 
             InitializeStageBackground();
+            InitializeController();
             PlayBackgroundMusic();
         }
 
-
+        // method to initialize controller 
+        private void InitializeController ()
+        {
+            var controllerPosition = new Vector2(
+                Resource.ScreenWidth / 2 - Controller.GetWidth() / 2,
+                Resource.ScreenHeight - Controller.GetWidth() - 70
+            );
+            Debug.Write($"{controllerPosition}, {Resource.ScreenWidth}, {Resource.ScreenHeight}, {Controller.Width}, {Controller.Height}" );
+            _controller = new Controller(controllerPosition);
+        }
 
         // Method to initialize the correct stage background based on the level
         private void InitializeStageBackground()
@@ -256,8 +271,16 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public void Update()
         {
+            // Update the controller
+            _controller.Update();
+
+            if (_controller.IsBackPressed())
+            {
+                OnPauseMenuRequest?.Invoke();
+            }
+
             Vector2 previousPosition = _hero.Position;
-            _hero.Update();
+            _hero.Update(_controller);
             CheckHeroCollisionWithBlocks(previousPosition);
             EnsureCharactersStaysWithinBounds();
             UpdateEnemies();
@@ -525,12 +548,12 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _hero.LoadContent();
             _hud.LoadContent();
             _stageBackground.LoadContent();
+            _controller.LoadContent();
         }
 
 
         public void Draw()
         {
-            // Draw background first
             _stageBackground.Draw();
             DrawFloors();
             DrawBlocks();
@@ -538,6 +561,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             DrawEnemies();
             _hero.Draw();
             _hud.Draw();
+            _controller.Draw();
         }
 
         private void DrawFloors()

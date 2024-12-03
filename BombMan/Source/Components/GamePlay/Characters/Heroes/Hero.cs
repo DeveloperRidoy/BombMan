@@ -1,5 +1,6 @@
 ﻿using BombMan.Source.Components.GamePlay.Items;
 using BombMan.Source.Core;
+using BombMan.Source.Core.IO;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -61,9 +62,10 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
             Texture = Art.HeroImages;
         }
 
-        public override void Update()
+        // Updated Update method to integrate controller
+        public void Update(Controller controller)
         {
-            base.Update(); // This will update Position based on Velocity in DynamicObject
+            base.Update();
 
             // Decrement the collision cooldown timer
             if (_collisionCooldown > TimeSpan.Zero)
@@ -73,13 +75,15 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
 
             // Handle input
             Vector2 input = Vector2.Zero;
-            if (Resource.InputManager.IsMoveUp()) input.Y -= 1;
-            if (Resource.InputManager.IsMoveDown()) input.Y += 1;
-            if (Resource.InputManager.IsMoveLeft()) input.X -= 1;
-            if (Resource.InputManager.IsMoveRight()) input.X += 1;
 
-            // Detect Enter key press or spacebar press for placing a kebomb
-            if (Resource.InputManager.IsEnterPressed() || Resource.InputManager.IsSpacePressed())
+            // Keyboard and controller integration
+            if (controller.IsUpPressed() || Resource.InputManager.IsMoveUp()) input.Y -= 1;
+            if (controller.IsDownPressed() || Resource.InputManager.IsMoveDown()) input.Y += 1;
+            if (controller.IsLeftPressed() || Resource.InputManager.IsMoveLeft()) input.X -= 1;
+            if (controller.IsRightPressed() || Resource.InputManager.IsMoveRight()) input.X += 1;
+
+            // Detect bomb placement
+            if (controller.IsEnterPressed() || Resource.InputManager.IsEnterPressed() || Resource.InputManager.IsSpacePressed())
             {
                 OnPlaceBomb?.Invoke(Position, this);
             }
@@ -88,24 +92,24 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
             if (input.Length() > 0)
             {
                 input.Normalize();
-                SetVelocity(input); // Set the Velocity based on input
+                SetVelocity(input);
             }
             else
             {
-                Stop(); // Stop movement when no input is given
-                SetNeutralState(); // Set the hero state to the neutral state of the current direction
+                Stop();
+                SetNeutralState();
             }
 
             // Update hero state based on input
             if (input != Vector2.Zero)
             {
-                _idleTime = TimeSpan.Zero; // Reset idle time
+                _idleTime = TimeSpan.Zero;
                 _animationTime += Resource.UpdateGameTime.ElapsedGameTime;
 
                 if (_animationTime.TotalSeconds > AnimationInterval)
                 {
                     _animationTime = TimeSpan.Zero;
-                    UpdateAnimationState(input); // Update animation based on movement direction
+                    UpdateAnimationState(input);
                 }
             }
             else
@@ -114,7 +118,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
 
                 if (_idleTime.TotalSeconds > IdleThreshold)
                 {
-                    _currentState = HeroState.MovingDownNeutral; // Reset to idle state
+                    _currentState = HeroState.MovingDownNeutral;
                 }
             }
         }

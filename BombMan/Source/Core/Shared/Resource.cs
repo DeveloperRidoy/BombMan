@@ -12,6 +12,7 @@ namespace BombMan.Source.Core.Shared
 {
     public static class Resource
     {
+        public static Platform Platform { get; set; }
         public static GraphicsDevice GraphicsDevice { get; set; }
         public static ContentManager ContentManager { get; set; }
         public static SpriteBatch SpriteBatch { get; set; }

@@ -13,13 +13,13 @@ namespace BombMan.Source.Core
 
     internal class GameManager: BaseComponent
     {
-        private readonly Game _game;
+        private readonly BombMan _game;
         private readonly MenuManager _menuManager;
         private GamePlayManager _gamePlayManager;
 
         public GameState CurrentGameState { get; private set; }
 
-        public GameManager(Game game)
+        public GameManager(BombMan game)
         {
             _game = game;
             _menuManager = new ();

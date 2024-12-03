@@ -230,6 +230,30 @@
 /processorParam:TextureFormat=Color
 /build:Images/Characters/Heroes.png
 
+#begin Images/Controller/BackBtnActive.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Controller/BackBtnActive.png
+
+#begin Images/Controller/BackBtnDefault.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Controller/BackBtnDefault.png
+
 #begin Images/Controller/ControllerImg_Active.png
 /importer:TextureImporter
 /processor:TextureProcessor
