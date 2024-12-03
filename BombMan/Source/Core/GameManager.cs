@@ -88,7 +88,5 @@ namespace BombMan.Source.Core
             }
 
         }
-
-
     }
 }
