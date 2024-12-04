@@ -124,8 +124,8 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         {
             PlaceFloors();
             PlaceHero();
-            PlaceEnemies();
             PlaceBlocks();
+            PlaceEnemies();
         }
 
         private void PlaceFloors()
@@ -291,8 +291,8 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             Vector2 previousPosition = _hero.Position;
             _hero.Update(_controller);
             CheckHeroCollisionWithBlocks(previousPosition);
-            EnsureCharactersStaysWithinBounds();
             UpdateEnemies();
+            EnsureCharactersStaysWithinBounds();
             UpdateBombs();
             ConditionallySpawnEnemies();
             ResetHeroBombReference();
