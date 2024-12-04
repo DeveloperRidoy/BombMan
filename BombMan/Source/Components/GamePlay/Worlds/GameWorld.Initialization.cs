@@ -47,7 +47,8 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _blocks.Clear();
             _shouldClearBombs = true;
             _enemies.Clear();
-            _hero.Health = 5;
+            _hero.Health = 5; // Reset hero health
+            _hero.Position = CalculateHeroStartPosition(); // Reset hero position
             PlaceBlocks();
             PlaceEnemies();
             LoadAllContent();

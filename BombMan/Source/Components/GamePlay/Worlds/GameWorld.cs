@@ -26,7 +26,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         private static readonly string SaveFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "BombMan",
-            "HighScores.bombMan"
+            "SavedWorld.bombMan"
         );
 
         private static readonly string HighScoreFilePath = Path.Combine(

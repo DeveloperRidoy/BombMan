@@ -25,7 +25,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 HighScores = HighScores.OrderByDescending(score => score)
                                        .Take(5)
                                        .ToList();
-                IsNewHighScore = Score > HighScores.Min();
+                IsNewHighScore = HighScores.Count == 1 || Score > HighScores.Min();
             }
             else
             {

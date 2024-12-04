@@ -4,7 +4,6 @@ using BombMan.Source.Components.GamePlay.Items;
 using BombMan.Source.Components.GamePlay.Objects;
 using System;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace BombMan.Source.Components.GamePlay.Worlds
 {
@@ -38,16 +37,12 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                     x = random.Next(WorldWidth);
                     y = random.Next(WorldHeight);
 
-                    Vector2 blockPosition = new(
-                        x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
-                        y * TileSize + HudHeight + StageBackgroundPadding
-                    );
+                    // Calculate the position of the block
+                    Vector2 blockPosition = CalculateItemPosition(x, y);
 
-                    Vector2 heroStartPosition = new(
-                        WorldWidth / 2 * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
-                        WorldHeight / 2 * TileSize + HudHeight + StageBackgroundPadding
-                    );
+                    Vector2 heroStartPosition = CalculateHeroStartPosition();
 
+                    // Ensure the block is not placed too close to the hero or other blocks
                     if (Vector2.Distance(blockPosition, heroStartPosition) < SafeZoneRadius ||
                         _blocks.Exists(b => b.Position == blockPosition))
                     {
@@ -64,11 +59,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         private void PlaceHero()
         {
-            _hero = new Hero(
-                new Vector2(
-                    WorldWidth / 2 * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
-                    WorldHeight / 2 * TileSize + HudHeight + StageBackgroundPadding
-                ),
+            _hero = new Hero(CalculateHeroStartPosition(),
                 CharacterWidth,
                 CharacterHeight,
                 1f,
@@ -94,10 +85,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                     x = random.Next(WorldWidth);
                     y = random.Next(WorldHeight);
 
-                    Vector2 enemyPosition = new(
-                        x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
-                        y * TileSize + HudHeight + StageBackgroundPadding
-                    );
+                    Vector2 enemyPosition = CalculateItemPosition(x, y);
 
                     Rectangle enemyBounds = new((int)enemyPosition.X, (int)enemyPosition.Y, CharacterWidth, CharacterHeight);
 
@@ -261,6 +249,22 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 new (WorldWidth * TileSize - StageBackgroundPadding + _horizontalCenterOffset, (WorldHeight - 1) * TileSize + HudHeight - StageBackgroundPadding)
             };
             return corners;
+        }
+
+        public Vector2 CalculateHeroStartPosition()
+        {
+            return new(
+                WorldWidth / 2 * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                WorldHeight / 2 * TileSize + HudHeight + StageBackgroundPadding
+            );
+        }
+
+        public Vector2 CalculateItemPosition (int x, int y)
+        {
+            return new(
+                 x * TileSize + StageBackgroundPadding + _horizontalCenterOffset,
+                 y * TileSize + HudHeight + StageBackgroundPadding
+             );
         }
     }
 }
