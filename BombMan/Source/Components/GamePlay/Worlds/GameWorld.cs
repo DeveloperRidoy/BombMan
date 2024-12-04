@@ -83,7 +83,6 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             {
                 InitializeDefaultWorld();
             }
-
             _hud = new HUD(_hero, this);
             _hero.OnPlaceBomb += PlaceBombAtPosition;
 
@@ -100,7 +99,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 Resource.ScreenHeight - Controller.GetWidth() - 70
             );
             Debug.Write($"{controllerPosition}, {Resource.ScreenWidth}, {Resource.ScreenHeight}, {Controller.Width}, {Controller.Height}" );
-            //_controller = new Controller(controllerPosition);
+            _controller = new Controller(controllerPosition);
         }
 
         // Method to initialize the correct stage background based on the level
@@ -217,7 +216,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                         y * TileSize + HudHeight + StageBackgroundPadding
                     );
 
-                    Rectangle enemyBounds = new ((int)enemyPosition.X, (int)enemyPosition.Y, CharacterWidth, CharacterHeight);
+                    Rectangle enemyBounds = new((int)enemyPosition.X, (int)enemyPosition.Y, CharacterWidth, CharacterHeight);
 
                     // Ensure no overlap with hero, blocks, or other enemies
                     bool isPositionValid = Vector2.Distance(enemyPosition, _hero.Position) >= SafeZoneRadius &&
@@ -226,7 +225,17 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
                     if (isPositionValid)
                     {
-                        _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
+                        if (Level == 1)
+                        {
+                            _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
+                        } else
+                        {
+                            var toss = random.Next(2);
+                            if (toss == 0)
+                                _enemies.Add(new EnemyLvl2(enemyPosition, CharacterWidth, CharacterHeight, 0.5f, HudHeight, TileSize, _hero));
+                            else
+                                _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
+                        }
                         break;
                     }
 
@@ -252,7 +261,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 (float)Math.Floor((position.Y - HudHeight) / TileSize) * TileSize + HudHeight
             );
 
-            // Prevent placing multiple bombs at the same location
+            //// Prevent placing multiple bombs at the same location
             if (!_bombs.Exists(b => b.Position == bombPosition))
             {
                 Bomb bomb = new(bombPosition, TileSize, TileSize);
@@ -272,15 +281,15 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         public void Update()
         {
             // Update the controller
-           // _controller.Update();
+            _controller.Update();
 
-            //if (_controller.IsBackPressed())
-            //{
-            //    OnPauseMenuRequest?.Invoke();
-            //}
+            if (_controller.IsBackPressed())
+            {
+                OnPauseMenuRequest?.Invoke();
+            }
 
             Vector2 previousPosition = _hero.Position;
-            _hero.Update(); // another version with controller exists
+            _hero.Update(_controller);
             CheckHeroCollisionWithBlocks(previousPosition);
             EnsureCharactersStaysWithinBounds();
             UpdateEnemies();
@@ -353,10 +362,9 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         {
             if (_hero.Health <= 0)
             {
-                // Stop background music
                 MediaPlayer.Stop();
-
                 UpdateHighScores();
+                GameWorldHelper.SaveHighScores(HighScores);
                 OnGameOver?.Invoke(Score, HighScores.Max(), IsNewHighScore);
             }
         }
@@ -496,9 +504,6 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                     InitializeNextLevel(); // Initialize the next level
                 }
             }
-
-            // Update high scores whenever the score changes
-            UpdateHighScores();
         }
 
 
@@ -548,7 +553,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _hero.LoadContent();
             _hud.LoadContent();
             _stageBackground.LoadContent();
-           // _controller.LoadContent();
+            _controller.LoadContent();
         }
 
 
@@ -561,7 +566,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             DrawEnemies();
             _hero.Draw();
             _hud.Draw();
-          //  _controller.Draw();
+            _controller.Draw();
         }
 
         private void DrawFloors()
@@ -705,15 +710,12 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 HighScores = HighScores.OrderByDescending(score => score)
                                        .Take(5)
                                        .ToList();
-                IsNewHighScore = true;
+                IsNewHighScore = Score > HighScores.Min();
             }
             else
             {
                 IsNewHighScore = false;
             }
-
-            // Save updated high scores
-            GameWorldHelper.SaveHighScores(HighScores);
         }
 
         private void PlayBackgroundMusic()
@@ -734,6 +736,5 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                 MediaPlayer.Play(Art.Map2Bgm);
             }      
         }
-
     }
 }

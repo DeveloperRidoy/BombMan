@@ -119,15 +119,31 @@ namespace BombMan.Source.Components.Menus
             Resource.SpriteBatch.DrawString(Art.DefaultFont, $"Score: {_score}", scorePosition, Color.DarkSlateGray);
 
             // Draw the high score or congratulations message
-            Vector2 highScorePosition = scorePosition + new Vector2(0, Art.DefaultFont.MeasureString("Score: ").Y + padding);
+            Vector2 highScoreOffset = new Vector2(0, Art.DefaultFont.MeasureString("Score: ").Y + padding);
+
+            // If it's a new high score, calculate centered position for the congratulations message
             if (_isNewHighScore)
             {
-                Resource.SpriteBatch.DrawString(Art.DefaultFont, "Congratulations! New High Score", highScorePosition, Color.Green);
+                string highScoreMessage = "Congratulations! New High Score";
+                Vector2 highScoreSize = Art.DefaultFont.MeasureString(highScoreMessage);
+                Vector2 highScorePosition = new(
+                    (Resource.GraphicsDevice.Viewport.Width - highScoreSize.X) / 2,
+                    scorePosition.Y + highScoreOffset.Y
+                );
+                Resource.SpriteBatch.DrawString(Art.DefaultFont, highScoreMessage, highScorePosition, Color.Green);
             }
             else
             {
-                Resource.SpriteBatch.DrawString(Art.DefaultFont, $"High Score: {_highScore}", highScorePosition, Color.Gray);
+                // Otherwise, show the high score message, also centered
+                string highScoreMessage = $"High Score: {_highScore}";
+                Vector2 highScoreSize = Art.DefaultFont.MeasureString(highScoreMessage);
+                Vector2 highScorePosition = new(
+                    (Resource.GraphicsDevice.Viewport.Width - highScoreSize.X) / 2,
+                    scorePosition.Y + highScoreOffset.Y
+                );
+                Resource.SpriteBatch.DrawString(Art.DefaultFont, highScoreMessage, highScorePosition, Color.Gray);
             }
+
 
             // Draw each menu item
             foreach (var item in _menuItems)
