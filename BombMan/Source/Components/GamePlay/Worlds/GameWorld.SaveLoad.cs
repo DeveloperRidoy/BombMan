@@ -5,6 +5,8 @@ using BombMan.Source.Components.GamePlay.Objects;
 using System.IO;
 using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BombMan.Source.Components.GamePlay.Worlds
 {
@@ -66,6 +68,13 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public void SaveToFile()
         {
+            // Ensure the directory exists before saving
+            var directory = Path.GetDirectoryName(SaveFilePath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             using StreamWriter writer = new(SaveFilePath);
 
             writer.WriteLine(Level);
@@ -91,6 +100,49 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             {
                 writer.WriteLine($"{bomb.Position.X},{bomb.Position.Y - HudHeight}");
             }
+        }
+
+
+        public static List<int> LoadHighScores()
+        {
+            // Ensure the directory exists before attempting to read
+            var directory = Path.GetDirectoryName(HighScoreFilePath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            if (File.Exists(HighScoreFilePath))
+            {
+                var highScores = File.ReadAllLines(HighScoreFilePath)
+                                     .Where(line => int.TryParse(line, out _)) // Ignore invalid entries
+                                     .Select(int.Parse)
+                                     .OrderByDescending(score => score)
+                                     .Take(MaxHighScores)
+                                     .ToList();
+
+                if (highScores.Count > 0)
+                    return highScores;
+            }
+
+            // Return an empty list if no valid scores are found
+            return new List<int>();
+        }
+
+        public static void SaveHighScores(List<int> highScores)
+        {
+            // Ensure the directory exists before saving
+            var directory = Path.GetDirectoryName(HighScoreFilePath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var sortedHighScores = highScores.OrderByDescending(score => score)
+                                             .Take(MaxHighScores)
+                                             .ToList();
+
+            File.WriteAllLines(HighScoreFilePath, sortedHighScores.Select(score => score.ToString()));
         }
     }
 }

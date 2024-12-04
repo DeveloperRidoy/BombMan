@@ -23,7 +23,19 @@ namespace BombMan.Source.Components.GamePlay.Worlds
         private const int HudHeight = 150;
         private const int StageBackgroundPadding = 85;
 
-        private const string SaveFilePath = "GameWorldSave.bombMan";
+        private static readonly string SaveFilePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "BombMan",
+            "HighScores.bombMan"
+        );
+
+        private static readonly string HighScoreFilePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "BombMan",
+            "HighScores.bombMan"
+        );
+
+        private const int MaxHighScores = 5;
 
         private readonly Floor[,] _floors;
         private readonly List<Block> _blocks;
@@ -58,7 +70,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             _enemies = new List<Enemy>();
             _bombs = new List<Bomb>();
 
-            HighScores = GameWorldHelper.LoadHighScores() ?? new List<int>();
+            HighScores = LoadHighScores() ?? new List<int>();
 
             // Center the game area horizontally
             int gameWidth = WorldWidth * TileSize + StageBackgroundPadding * 2;

@@ -12,7 +12,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             {
                 MediaPlayer.Stop();
                 UpdateHighScores();
-                GameWorldHelper.SaveHighScores(HighScores);
+                SaveHighScores(HighScores);
                 OnGameOver?.Invoke(Score, HighScores.Max(), IsNewHighScore);
             }
         }
