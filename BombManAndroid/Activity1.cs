@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Microsoft.Xna.Framework;
+using BombMan.Source.Core;
 
 namespace BombManAndroid
 {
@@ -17,14 +18,14 @@ namespace BombManAndroid
     )]
     public class Activity1 : AndroidGameActivity
     {
-        private Game1 _game;
+        private BombMan.BombMan _game;
         private View _view;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
-            _game = new Game1();
+            _game = new BombMan.BombMan(Platform.Android);
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);
