@@ -6,22 +6,16 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace BombMan.Source.Components.Menus
 {
-    public class MenuItem : BaseComponent
+    public class MenuItem(string name, Action action) : BaseComponent
     {
-        public string Name { get; }
-        public Action Action { get; set; }
+        public string Name { get; } = name;
+        public Action Action { get; set; } = action;
         public Vector2 Position { get; private set; }
         public Vector2 Size { get; private set; }
         public bool IsSelected { get; set; }
 
         private readonly int _paddingX = 10;
         private readonly int _paddingY = 5;
-
-        public MenuItem(string name, Action action)
-        {
-            Name = name;
-            Action = action;
-        }
 
         public override void LoadContent()
         {

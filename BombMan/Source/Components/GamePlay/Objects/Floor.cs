@@ -4,14 +4,8 @@ using BombMan.Source.Core.Shared;
 namespace BombMan.Source.Components.GamePlay.Objects
 {
 
-    public class Floor : StaticObject
+    public class Floor(Vector2 position, int width, int height) : StaticObject(position, width, height)
     {
-
-        public Floor(Vector2 position, int width, int height)
-            : base(position, width, height)
-        {
-        }
-
         public override void LoadContent()
         {
             Texture = Art.Floor;

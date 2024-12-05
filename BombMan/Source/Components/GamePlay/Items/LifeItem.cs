@@ -8,12 +8,8 @@ using BombMan.Source.Core.Shared;
 
 namespace BombMan.Source.Components.GamePlay.Items
 {
-    internal class LifeItem: StaticObject
+    internal class LifeItem(Vector2 initialPosition, int width, int height) : StaticObject(initialPosition, width, height)
     {
-
-        public LifeItem(Vector2 initialPosition, int width, int height) : base(initialPosition, width, height)
-        {
-        }
         public override void LoadContent()
         {
             Texture = Art.HealthIcon;

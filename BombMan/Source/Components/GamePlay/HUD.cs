@@ -6,18 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    public class HUD : BaseComponent
+    public class HUD(Hero hero, GameWorld gameWorld) : BaseComponent
     {
-        private readonly Hero _hero;
-        private readonly GameWorld _gameWorld;
-        private readonly int _healthIconSize;
-
-        public HUD(Hero hero, GameWorld gameWorld)
-        {
-            _hero = hero;
-            _gameWorld = gameWorld;
-            _healthIconSize = 32;
-        }
+        private readonly Hero _hero = hero;
+        private readonly GameWorld _gameWorld = gameWorld;
+        private readonly int _healthIconSize = 32;
 
         public override void LoadContent()
         {

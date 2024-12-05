@@ -7,20 +7,12 @@ using System.Collections.Generic;
 
 namespace BombMan.Source.Components.GamePlay.Characters.Enemies
 {
-    internal class EnemyLvl2 : Enemy
+    internal class EnemyLvl2(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize, Hero hero) : Enemy(initialPosition, width, height, speed, hudHeight, tileSize)
     {
-        private readonly Hero _hero;
-        private Vector2 _previousPosition;
-        private TimeSpan _cooldownTimer;
+        private readonly Hero _hero = hero;
+        private Vector2 _previousPosition = initialPosition;
+        private TimeSpan _cooldownTimer = TimeSpan.Zero;
         private const float CooldownDuration = 5f; // 5 seconds cooldown
-
-        public EnemyLvl2(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize, Hero hero)
-            : base(initialPosition, width, height, speed, hudHeight, tileSize)
-        {
-            _hero = hero;
-            _previousPosition = initialPosition;
-            _cooldownTimer = TimeSpan.Zero;
-        }
 
         public override void LoadContent()
         {

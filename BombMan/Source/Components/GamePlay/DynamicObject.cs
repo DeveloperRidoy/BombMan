@@ -3,18 +3,11 @@ using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    public abstract class DynamicObject : GameObject
+    public abstract class DynamicObject(Vector2 initialPosition, int width, int height, float speed) : GameObject(initialPosition, width, height)
     {
         // Movement-specific properties
         public Vector2 Velocity { get; set; } = Vector2.Zero;
-        public float Speed { get; set; }
-
-        // Constructor
-        public DynamicObject(Vector2 initialPosition, int width, int height, float speed)
-            : base(initialPosition, width, height)
-        {
-            Speed = speed * 100;
-        }
+        public float Speed { get; set; } = speed * 100;
 
         // Update logic for movement
         public override void Update()

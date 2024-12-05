@@ -15,13 +15,13 @@ namespace BombMan.Source.Components.GamePlay.Worlds
     {
         public event Action<int, int, bool> OnGameOver;
         public event Action OnPauseMenuRequest;
-        private const int WorldWidth = 8;
-        private const int WorldHeight = 8;
-        private const int TileSize = 64;
-        private const int CharacterWidth = 30;
-        private const int CharacterHeight = 40;
-        private const int HudHeight = 150;
-        private const int StageBackgroundPadding = 85;
+        private int WorldWidth;
+        private int WorldHeight;
+        private int TileSize;
+        private int CharacterWidth;
+        private int CharacterHeight;
+        private int HudHeight;
+        private int StageBackgroundPadding;
 
         private static readonly string SaveFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -46,13 +46,13 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         private bool _shouldClearBombs = false;
 
-        private const int SafeZoneRadius = TileSize * 2; // Blocks and enemies won't spawn within 2 tiles of the hero
+        private int SafeZoneRadius; // Blocks and enemies won't spawn within 2 tiles of the hero
 
         private Controller _controller;
 
         public int Level { get; private set; } = 1;
         public int Score { get; private set; } = 0;
-        public List<int> HighScores { get; private set; } = new List<int>();
+        public List<int> HighScores { get; private set; } = [];
         public bool IsNewHighScore { get; private set; } = false;
 
         private TimeSpan _enemySpawnTimer = TimeSpan.Zero;
@@ -65,12 +65,14 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public GameWorld(bool loadGame)
         {
-            _floors = new Floor[WorldHeight, WorldWidth];
-            _blocks = new List<Block>();
-            _enemies = new List<Enemy>();
-            _bombs = new List<Bomb>();
+            InitializeVariables();
 
-            HighScores = LoadHighScores() ?? new List<int>();
+            _floors = new Floor[WorldHeight, WorldWidth];
+            _blocks = [];
+            _enemies = [];
+            _bombs = [];
+
+            HighScores = LoadHighScores() ?? [];
 
             // Center the game area horizontally
             int gameWidth = WorldWidth * TileSize + StageBackgroundPadding * 2;

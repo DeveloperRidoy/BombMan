@@ -4,13 +4,8 @@ using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    internal class GameBackground: StaticObject
+    internal class GameBackground(Vector2 position, int width, int height) : StaticObject(position, width, height)
     {
-        public GameBackground(Vector2 position, int width, int height)
-            : base(position, width, height)
-        {
-        }
-
         public override void LoadContent()
         {
             // Load the background image

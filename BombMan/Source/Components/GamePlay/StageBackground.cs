@@ -9,17 +9,10 @@ using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    public class StageBackground: StaticObject
+    public class StageBackground(Vector2 position, int width, int height, ELvl lvel) : StaticObject(position, width, height)
     {
 
-        private readonly ELvl _level;
-
-
-        public StageBackground(Vector2 position, int width, int height, ELvl lvel)
-            : base(position, width, height)
-        {
-            _level = lvel;
-        }
+        private readonly ELvl _level = lvel;
 
         public override void LoadContent()
         {

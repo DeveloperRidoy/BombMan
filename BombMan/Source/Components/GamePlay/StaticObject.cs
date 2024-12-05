@@ -4,14 +4,8 @@ using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    public class StaticObject : GameObject
+    public class StaticObject(Vector2 position, int width, int height) : GameObject(position, width, height)
     {
-        // Constructor
-        public StaticObject(Vector2 position, int width, int height)
-            : base(position, width, height)
-        {
-        }
-
         public override void LoadContent()
         {
         }

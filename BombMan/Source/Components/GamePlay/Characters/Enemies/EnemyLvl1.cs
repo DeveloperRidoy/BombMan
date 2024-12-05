@@ -6,13 +6,8 @@ using System.Collections.Generic;
 
 namespace BombMan.Source.Components.GamePlay.Characters.Enemies
 {
-    internal class EnemyLvl1 : Enemy
+    internal class EnemyLvl1(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize) : Enemy(initialPosition, width, height, speed, hudHeight, tileSize)
     {
-        public EnemyLvl1(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize)
-            : base(initialPosition, width, height, speed, hudHeight, tileSize)
-        {
-        }
-
         public override void Update()
         {
             base.Update();
