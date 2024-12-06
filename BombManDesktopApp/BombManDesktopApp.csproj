@@ -19,9 +19,9 @@
     <Folder Include="Content\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\BombMan\Content\Content.mgcb" Link="Content\Content.mgcb">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <MonoGameContentReference Include="..\BombMan\Content\Content.mgcb" Link="Content\Content.mgcb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MonoGameContentReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BombMan\BombMan.csproj" />

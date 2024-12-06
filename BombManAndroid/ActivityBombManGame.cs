@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Microsoft.Xna.Framework;
-using BombMan.Source.Core;
 
 namespace BombManAndroid
 {
@@ -16,7 +15,7 @@ namespace BombManAndroid
         ScreenOrientation = ScreenOrientation.FullUser,
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize
     )]
-    public class Activity1 : AndroidGameActivity
+    public class ActivityBombManGame : AndroidGameActivity
     {
         private BombMan.BombMan _game;
         private View _view;
@@ -25,7 +24,7 @@ namespace BombManAndroid
         {
             base.OnCreate(bundle);
 
-            _game = new BombMan.BombMan(Platform.Android);
+            _game = new BombMan.BombMan(BombMan.Source.Core.Platform.Android);
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);
