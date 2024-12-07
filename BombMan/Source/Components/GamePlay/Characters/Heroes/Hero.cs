@@ -9,17 +9,17 @@ using System;
 
 namespace BombMan.Source.Components.GamePlay.Characters.Heroes
 {
-    public class Hero : DynamicObject
+    public class Hero(Vector2 initialPosition, int width, int height, float speed, int health) : DynamicObject(initialPosition, width, height, speed)
     {
         // Additional properties for the hero
 
         public event Action<Vector2, Hero> OnPlaceBomb;
         public Bomb LastPlacedBomb { get; set; }
 
-        public int Health { get; set; }
+        public int Health { get; set; } = health;
         private readonly int _imageHeight = 26;
         private readonly int _imageWidth = 18;
-        private TimeSpan _collisionCooldown;
+        private TimeSpan _collisionCooldown = TimeSpan.Zero;
         private const float CollisionCooldownDuration = 1f; // 1 second cooldown
 
         // Enum for hero states
@@ -39,22 +39,11 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
             MovingLeftLeftFoot
         }
 
-        private HeroState _currentState;
-        private TimeSpan _idleTime;
+        private HeroState _currentState = HeroState.MovingDownNeutral;
+        private TimeSpan _idleTime = TimeSpan.Zero;
         private const float IdleThreshold = 3f; // 3 seconds
-        private TimeSpan _animationTime;
+        private TimeSpan _animationTime = TimeSpan.Zero;
         private const float AnimationInterval = 0.2f; // 200 milliseconds
-
-        // Constructor
-        public Hero(Vector2 initialPosition, int width, int height, float speed, int health)
-            : base(initialPosition, width, height, speed)
-        {
-            Health = health;
-            _currentState = HeroState.MovingDownNeutral;
-            _idleTime = TimeSpan.Zero;
-            _animationTime = TimeSpan.Zero;
-            _collisionCooldown = TimeSpan.Zero;
-        }
 
         // Load hero-specific content
         public override void LoadContent()

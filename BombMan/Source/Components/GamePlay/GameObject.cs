@@ -4,22 +4,14 @@ using BombMan.Source.Core.Shared;
 
 namespace BombMan.Source.Components.GamePlay
 {
-    public abstract class GameObject : BaseComponent
+    public abstract class GameObject(Vector2 initialPosition, int width, int height) : BaseComponent
     {
         // Common properties for all game objects
-        public Vector2 Position { get; set; } = Vector2.Zero;
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public Vector2 Position { get; set; } = initialPosition;
+        public int Width { get; set; } = width;
+        public int Height { get; set; } = height;
         public Texture2D Texture { get; protected set; }
         public bool IsActive { get; set; } = true;
-
-        // Constructor
-        public GameObject(Vector2 initialPosition, int width, int height)
-        {
-            Position = initialPosition;
-            Width = width;
-            Height = height;
-        }
 
         // Load content (to be implemented by derived classes)
         public override void LoadContent()

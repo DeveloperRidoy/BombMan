@@ -26,7 +26,7 @@ namespace BombMan.Source.Components.Menus
         public BaseMenu(string title, bool isSubMenu = false, float horizontalPadding = 120f, float verticalPadding = 30f)
         {
             _title = title;
-            _menuItems = new List<MenuItem>();
+            _menuItems = [];
             _isSubMenu = isSubMenu;
             _selectedIndex = 0;
             _horizontalPadding = horizontalPadding;
@@ -47,7 +47,7 @@ namespace BombMan.Source.Components.Menus
         {
             // Load a default background texture
             _backgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
-            _backgroundTexture.SetData(new[] { Color.White });
+            _backgroundTexture.SetData([Color.White]);
 
             SetMenuItemPositions();
         }

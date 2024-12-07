@@ -1,23 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-android</TargetFramework>
     <OutputType>Exe</OutputType>
-    <ApplicationId>com.companyname.BombManGame.Android</ApplicationId>
+    <ApplicationId>com.companyname.BombManAndroid</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
+    <MonoGameContentReference Include="..\BombMan\Content\Content.mgcb" Link="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105" />
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.1105" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
-  <ItemGroup>
-    <MonoGameContentReference Include="..\BombMan\Content\Content.mgcb" Link="Content\Content.mgcb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MonoGameContentReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BombMan\BombMan.csproj" />

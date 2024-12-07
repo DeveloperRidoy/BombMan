@@ -7,25 +7,15 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace BombMan.Source.Core.IO
 {
-    public class ControllerButton : GameObject
+    public class ControllerButton(Vector2 position, int width, int height, Texture2D defaultTexture, Texture2D activeTexture, Rectangle sourceRect, bool isSinglePressKey, params Keys[] keyboardKeys) : GameObject(position, width, height)
     {
-        private readonly Texture2D _defaultTexture;
-        private readonly Texture2D _activeTexture;
-        private readonly Rectangle _sourceRect;
-        private readonly Keys[] _keyboardKeys; // Associated keyboard keys
-        private readonly bool _isSinglePressKey; // Indicates if this button should only accept a single click
+        private readonly Texture2D _defaultTexture = defaultTexture;
+        private readonly Texture2D _activeTexture = activeTexture;
+        private readonly Rectangle _sourceRect = sourceRect;
+        private readonly Keys[] _keyboardKeys = keyboardKeys; // Associated keyboard keys
+        private readonly bool _isSinglePressKey = isSinglePressKey; // Indicates if this button should only accept a single click
 
         public bool IsPressed { get; private set; }
-
-        public ControllerButton(Vector2 position, int width, int height, Texture2D defaultTexture, Texture2D activeTexture, Rectangle sourceRect, bool isSinglePressKey, params Keys[] keyboardKeys)
-            : base(position, width, height)
-        {
-            _defaultTexture = defaultTexture;
-            _activeTexture = activeTexture;
-            _sourceRect = sourceRect;
-            _keyboardKeys = keyboardKeys;
-            _isSinglePressKey = isSinglePressKey;
-        }
 
         public override void LoadContent()
         {

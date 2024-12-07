@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BombMan.Source.Core.IO;
 using Microsoft.Xna.Framework.Input.Touch;
-using System.Runtime.InteropServices;
 
 namespace BombMan
 {

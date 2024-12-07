@@ -119,7 +119,7 @@ namespace BombMan.Source.Components.Menus
             Resource.SpriteBatch.DrawString(Art.DefaultFont, $"Score: {_score}", scorePosition, Color.DarkSlateGray);
 
             // Draw the high score or congratulations message
-            Vector2 highScoreOffset = new Vector2(0, Art.DefaultFont.MeasureString("Score: ").Y + padding);
+            Vector2 highScoreOffset = new (0, Art.DefaultFont.MeasureString("Score: ").Y + padding);
 
             // If it's a new high score, calculate centered position for the congratulations message
             if (_isNewHighScore)

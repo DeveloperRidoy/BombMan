@@ -66,7 +66,7 @@ namespace BombMan.Source.Core.Shared
             HelpImage = Resource.ContentManager.Load<Texture2D>("Images/Help");
             HealthIcon = Resource.ContentManager.Load<Texture2D>("Images/HeartIcon");
             WhiteBackgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
-            WhiteBackgroundTexture.SetData(new[] { Color.White });
+            WhiteBackgroundTexture.SetData([Color.White]);
 
             ExplosionSound = Resource.ContentManager.Load<SoundEffect>("Audio/Bombs/ExplosionSound");
             GameOverSound = Resource.ContentManager.Load<SoundEffect>("Audio/GameOverSound");

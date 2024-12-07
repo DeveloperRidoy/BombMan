@@ -2,11 +2,40 @@
 using BombMan.Source.Core.Shared;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using BombMan.Source.Core;
 
 namespace BombMan.Source.Components.GamePlay.Worlds
 {
     public partial class GameWorld
     {
+
+        private void InitializeVariables()
+        {
+            switch (Resource.Platform)
+            {
+                case Platform.Android:
+                    WorldWidth = 6;
+                    WorldHeight = 6;
+                    TileSize = 48;
+                    CharacterWidth = 25;
+                    CharacterHeight = 35;
+                    StageBackgroundPadding = 0;
+                    break;
+
+                case Platform.Windows:
+                default:
+                    WorldWidth = 8;
+                    WorldHeight = 8;
+                    TileSize = 64;
+                    CharacterWidth = 30;
+                    CharacterHeight = 40;
+                    StageBackgroundPadding = 80;
+                    break;
+            }
+            SafeZoneRadius = TileSize * 2;
+            HudHeight = 150;
+        }
+
         private void InitializeController()
         {
             var controllerPosition = new Vector2(

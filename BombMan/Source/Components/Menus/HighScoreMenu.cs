@@ -15,7 +15,7 @@ namespace BombMan.Source.Components.Menus
             true // Indicates this is a submenu
         )
         {
-            _highScores = GameWorld.LoadHighScores() ?? new List<int>();
+            _highScores = GameWorld.LoadHighScores() ?? [];
         }
 
         public override void LoadContent()

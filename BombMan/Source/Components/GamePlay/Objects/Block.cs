@@ -10,15 +10,9 @@ using BombMan.Source.Core.Shared;
 namespace BombMan.Source.Components.GamePlay.Objects
 {
 
-    public class Block: StaticObject
+    public class Block(Vector2 position, int width, int height, ELvl lvl) : StaticObject(position, width, height)
     {
-        public ELvl Lvl;
-
-        public Block(Vector2 position, int width, int height, ELvl lvl)
-            : base(position, width, height)
-        {
-            Lvl = lvl;
-        }
+        public ELvl Lvl = lvl;
 
         public override void LoadContent()
         {

@@ -8,22 +8,15 @@ using System.Collections.Generic;
 
 namespace BombMan.Source.Components.GamePlay.Characters.Enemies
 {
-    public abstract class Enemy : DynamicObject
+    public abstract class Enemy(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize) : DynamicObject(initialPosition, width, height, speed)
     {
         protected static readonly Random Random = new();
-        protected readonly int HudHeight;
-        protected readonly int TileSize;
+        protected readonly int HudHeight = hudHeight;
+        protected readonly int TileSize = tileSize;
 
         private float _floatingOffset = 0; // For sine wave calculation
         private const float FloatingSpeed = 10f; // Adjust the speed of floating
         private const float FloatingAmplitude = 5f; // Adjust the range of floating
-
-        protected Enemy(Vector2 initialPosition, int width, int height, float speed, int hudHeight, int tileSize)
-            : base(initialPosition, width, height, speed)
-        {
-            HudHeight = hudHeight;
-            TileSize = tileSize;
-        }
 
         public override void LoadContent()
         {

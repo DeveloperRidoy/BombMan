@@ -3,9 +3,8 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Microsoft.Xna.Framework;
-using BombMan.Source.Core;
 
-namespace BombManGame.Android
+namespace BombManAndroid
 {
     [Activity(
         Label = "@string/app_name",
@@ -25,7 +24,7 @@ namespace BombManGame.Android
         {
             base.OnCreate(bundle);
 
-            _game = new BombMan.BombMan(Platform.Android);
+            _game = new BombMan.BombMan(BombMan.Source.Core.Platform.Android);
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);

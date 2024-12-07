@@ -126,7 +126,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             }
 
             // Return an empty list if no valid scores are found
-            return new List<int>();
+            return [];
         }
 
         public static void SaveHighScores(List<int> highScores)
