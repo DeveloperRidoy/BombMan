@@ -1,17 +1,13 @@
 ﻿using BombMan.Source.Components.GamePlay.Items;
-using BombMan.Source.Core;
 using BombMan.Source.Core.IO;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace BombMan.Source.Components.GamePlay.Characters.Heroes
 {
     public class Hero(Vector2 initialPosition, int width, int height, float speed, int health) : DynamicObject(initialPosition, width, height, speed)
     {
-        // Additional properties for the hero
 
         public event Action<Vector2, Hero> OnPlaceBomb;
         public Bomb LastPlacedBomb { get; set; }
@@ -45,13 +41,12 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
         private TimeSpan _animationTime = TimeSpan.Zero;
         private const float AnimationInterval = 0.2f; // 200 milliseconds
 
-        // Load hero-specific content
         public override void LoadContent()
         {
             Texture = Art.HeroImages;
         }
 
-        // Updated Update method to integrate controller
+        // Update method with controller parameter
         public void Update(Controller controller)
         {
             base.Update();
@@ -76,7 +71,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
                 OnPlaceBomb?.Invoke(Position, this);
             }
 
-            // Normalize input for consistent diagonal movement
+            // Normalize input for diagonal movement
             if (input.Length() > 0)
             {
                 input.Normalize();
@@ -111,6 +106,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
             }
         }
 
+        // Update method without controller parameter
         public override void Update()
         {
             base.Update();
@@ -135,7 +131,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Heroes
                 OnPlaceBomb?.Invoke(Position, this);
             }
 
-            // Normalize input for consistent diagonal movement
+            // Normalize input for diagonal movement
             if (input.Length() > 0)
             {
                 input.Normalize();

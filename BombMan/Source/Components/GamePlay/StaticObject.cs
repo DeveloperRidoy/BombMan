@@ -1,6 +1,4 @@
-﻿using BombMan.Source.Core.Shared;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace BombMan.Source.Components.GamePlay
 {

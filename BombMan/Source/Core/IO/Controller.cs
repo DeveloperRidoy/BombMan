@@ -18,7 +18,6 @@ namespace BombMan.Source.Core.IO
         public readonly ControllerButton _enterButton;
         public readonly ControllerButton _backButton;
 
-        // Define button dimensions and layout
         private readonly static int buttonSize = 30;  // Standard button size
         private readonly static int spacing = 5;    // Spacing between buttons
         private readonly static int sideOffset = 60; // Horizontal/vertical offset for action buttons
@@ -26,9 +25,8 @@ namespace BombMan.Source.Core.IO
         public Controller(Vector2 basePosition)
         {
 
-            // Dynamically calculate the controller width and height based on layout
-            Width = GetWidth(); // Account for Enter button width
-            Height = GetHeight();   // Account for Back button height
+            Width = GetWidth();
+            Height = GetHeight();
 
             // Define source rectangles for button images
             Rectangle upSource = new(176, 0, 158, 158);
@@ -38,7 +36,7 @@ namespace BombMan.Source.Core.IO
             Rectangle enterSource = new(156, 156, 200, 200);
             Rectangle backSource = new(0, 0, Art.BackBtnActive.Width, Art.BackBtnActive.Height);
 
-            // Positioning buttons in a standard layout
+            // Positioning buttons
             _upButton = new ControllerButton(
                 basePosition + new Vector2(buttonSize + spacing, spacing),
                 buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, upSource, false, Keys.W, Keys.Up
@@ -59,7 +57,7 @@ namespace BombMan.Source.Core.IO
                 buttonSize, buttonSize, Art.ControllerDefault, Art.ControllerActive, rightSource, false, Keys.D, Keys.Right
             );
 
-            // Place Enter button to the right of the D-Pad
+            // Place Enter button to the right of the D-Pads
             _enterButton = new ControllerButton(
                 basePosition + new Vector2((buttonSize + spacing) * 3, buttonSize),
                 buttonSize + 10, buttonSize + 10, Art.ControllerDefault, Art.ControllerActive, enterSource, true, Keys.Enter, Keys.Space

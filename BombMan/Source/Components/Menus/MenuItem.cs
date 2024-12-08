@@ -1,7 +1,6 @@
 ﻿using System;
 using BombMan.Source.Core.Shared;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace BombMan.Source.Components.Menus

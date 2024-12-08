@@ -57,9 +57,9 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
             {
                 if (GetBoundingRectangle().Intersects(block.GetBoundingRectangle()))
                 {
-                    // Revert to previous position to avoid teleporting
+                    // Revert to previous position
                     Position = _previousPosition;
-                    // Change direction to avoid getting stuck
+                    // Update direction to follow the hero
                     Vector2 direction = _hero.Position - Position;
                     direction = new Vector2(-direction.Y, direction.X); // Rotate direction by 90 degrees
                     SetVelocity(direction);

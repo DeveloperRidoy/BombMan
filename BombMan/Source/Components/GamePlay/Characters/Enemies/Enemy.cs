@@ -14,19 +14,19 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
         protected readonly int HudHeight = hudHeight;
         protected readonly int TileSize = tileSize;
 
-        private float _floatingOffset = 0; // For sine wave calculation
-        private const float FloatingSpeed = 10f; // Adjust the speed of floating
-        private const float FloatingAmplitude = 5f; // Adjust the range of floating
+        private float _floatingOffset = 0;
+        private const float FloatingSpeed = 10f; // floating speed
+        private const float FloatingAmplitude = 5f; // floating range
 
         public override void LoadContent()
         {
-            Texture = Art.EnemyLvl1; // Adjust as needed
+            Texture = Art.EnemyLvl1;
         }
 
         public override void Update()
         {
             base.Update();
-            // Update the floating offset over time
+            // update floating offset
             _floatingOffset += FloatingSpeed * (float)Resource.UpdateGameTime.ElapsedGameTime.TotalSeconds;
         }
 
@@ -34,7 +34,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
         {
             if (IsActive && Texture != null)
             {
-                // Calculate floating offset using sine wave
+                // Calculate floating offset
                 float floatOffsetY = (float)Math.Sin(_floatingOffset) * FloatingAmplitude;
 
                 Rectangle sourceRectangle = GetSourceRectangle();
@@ -72,7 +72,6 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
             }
         }
 
-        // **Add this method**
         public virtual void HandleCollisionWithBombs(List<Bomb> bombs)
         {
             foreach (var bomb in bombs)

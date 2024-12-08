@@ -1,7 +1,6 @@
 ﻿using BombMan.Source.Components;
 using BombMan.Source.Components.GamePlay;
 using BombMan.Source.Components.Menus;
-using Microsoft.Xna.Framework.Media;
 
 namespace BombMan.Source.Core
 {
@@ -34,10 +33,10 @@ namespace BombMan.Source.Core
             _gamePlayManager.MainMenuRequested += () =>
             {
                 CurrentGameState = GameState.Menu;
-                _menuManager.LoadContent(); // Reload menu content and music
+                _menuManager.LoadContent();
             };
             CurrentGameState = GameState.InGame;
-            _gamePlayManager.LoadContent(); // Load game content
+            _gamePlayManager.LoadContent();
         }
 
         public void ExitGame () => CurrentGameState = GameState.GameExit;

@@ -68,7 +68,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public void SaveToFile()
         {
-            // Ensure the directory exists before saving
+            // Ensure the directory exists
             var directory = Path.GetDirectoryName(SaveFilePath);
             if (!Directory.Exists(directory))
             {
@@ -105,7 +105,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public static List<int> LoadHighScores()
         {
-            // Ensure the directory exists before attempting to read
+            // Ensure the directory exists
             var directory = Path.GetDirectoryName(HighScoreFilePath);
             if (!Directory.Exists(directory))
             {
@@ -115,7 +115,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             if (File.Exists(HighScoreFilePath))
             {
                 var highScores = File.ReadAllLines(HighScoreFilePath)
-                                     .Where(line => int.TryParse(line, out _)) // Ignore invalid entries
+                                     .Where(line => int.TryParse(line, out _)) // Ignoring invalid entries
                                      .Select(int.Parse)
                                      .OrderByDescending(score => score)
                                      .Take(MaxHighScores)
@@ -131,7 +131,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         public static void SaveHighScores(List<int> highScores)
         {
-            // Ensure the directory exists before saving
+            // Ensure the directory exists
             var directory = Path.GetDirectoryName(HighScoreFilePath);
             if (!Directory.Exists(directory))
             {

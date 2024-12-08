@@ -45,7 +45,6 @@ namespace BombMan.Source.Components.Menus
 
         public override void LoadContent()
         {
-            // Load a default background texture
             _backgroundTexture = new Texture2D(Resource.GraphicsDevice, 1, 1);
             _backgroundTexture.SetData([Color.White]);
 
@@ -147,7 +146,7 @@ namespace BombMan.Source.Components.Menus
                 (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
             );
 
-            // Draw the semi-transparent background
+            // Draw the background
             Rectangle backgroundRectangle = new(
                 (int)(menuPosition.X),
                 (int)(menuPosition.Y),

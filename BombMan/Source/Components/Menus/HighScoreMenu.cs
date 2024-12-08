@@ -33,7 +33,7 @@ namespace BombMan.Source.Components.Menus
             float lineHeight = Art.DefaultFont.MeasureString("A").Y;
             float padding = 20f;
 
-            // Calculate starting Y position after the high scores
+            // Calculate vertical starting position after the high scores
             float menuStartY = (Resource.GraphicsDevice.Viewport.Height - (titleSize.Y + _highScores.Count * (lineHeight + padding) + _menuItems.Count * (lineHeight + padding))) / 2
                                + titleSize.Y
                                + _highScores.Count * (lineHeight + padding)
@@ -58,7 +58,7 @@ namespace BombMan.Source.Components.Menus
             // Calculate the bounds of the menu area
             Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
             float padding = 20f;
-            float menuWidth = 400f; // Fixed width for simplicity
+            float menuWidth = 400f;
             float menuHeight = titleSize.Y;
 
             // Add height for high scores
@@ -85,7 +85,7 @@ namespace BombMan.Source.Components.Menus
                 (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
             );
 
-            // Draw the semi-transparent background
+            // Draw the background
             Rectangle backgroundRectangle = new(
                 (int)(menuPosition.X - padding),
                 (int)(menuPosition.Y - padding),
@@ -118,7 +118,7 @@ namespace BombMan.Source.Components.Menus
                 highScorePosition.Y += Art.DefaultFont.MeasureString(score.ToString()).Y + padding;
             }
 
-            // Draw each menu item
+            // Draw menu items
             foreach (var item in _menuItems)
             {
                 item.Draw();

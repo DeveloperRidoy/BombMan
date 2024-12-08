@@ -13,7 +13,7 @@ namespace BombMan.Source.Components.GamePlay.Characters.Enemies
             base.Update();
 
             // Random movement
-            if (Random.NextDouble() < 0.01) // Change direction occasionally
+            if (Random.NextDouble() < 0.01)
             {
                 SetRandomDirection();
             }

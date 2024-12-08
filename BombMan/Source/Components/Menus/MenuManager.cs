@@ -26,7 +26,7 @@ namespace BombMan.Source.Components.Menus
             _menuStack.Push(mainMenu);
             _currentMenu = mainMenu;
 
-            // React to menu changes
+            // handle menu changes
             foreach (var menu in _menuStack)
             {
                 menu.MenuChanged += SwitchToMenu;
@@ -59,7 +59,7 @@ namespace BombMan.Source.Components.Menus
         public void SwitchToMenu(BaseMenu newMenu)
         {
             if (_currentMenu.GetType() == newMenu.GetType())
-                return; // Avoid redundant menu switching
+                return; // stop if the menu is already active
 
             _menuStack.Push(newMenu);
             _currentMenu = newMenu;

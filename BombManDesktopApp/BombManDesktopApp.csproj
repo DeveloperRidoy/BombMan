@@ -18,6 +18,7 @@
   <ItemGroup>
     <Folder Include="Content\" />
     <Folder Include="Content\" />
+    <Folder Include="Content\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="..\BombMan\Content\Content.mgcb" Link="Content\Content.mgcb">

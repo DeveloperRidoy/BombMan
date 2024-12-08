@@ -12,14 +12,13 @@ namespace BombMan.Source.Core.IO
         private readonly Texture2D _defaultTexture = defaultTexture;
         private readonly Texture2D _activeTexture = activeTexture;
         private readonly Rectangle _sourceRect = sourceRect;
-        private readonly Keys[] _keyboardKeys = keyboardKeys; // Associated keyboard keys
+        private readonly Keys[] _keyboardKeys = keyboardKeys;
         private readonly bool _isSinglePressKey = isSinglePressKey; // Indicates if this button should only accept a single click
 
         public bool IsPressed { get; private set; }
 
         public override void LoadContent()
         {
-            // Set textures for the GameObject base class
             Texture = _defaultTexture;
         }
 
@@ -28,7 +27,7 @@ namespace BombMan.Source.Core.IO
             // Check if the button is pressed via touch, mouse, or keyboard input
             IsPressed = CheckIfPressed();
 
-            // Update the texture to reflect active or default state
+            // Update the texture to show active or default state
             Texture = IsPressed ? _activeTexture : _defaultTexture;
         }
 
@@ -63,7 +62,7 @@ namespace BombMan.Source.Core.IO
             {
                 if (_isSinglePressKey)
                 {
-                    // Single press: only true on key down transition
+                    // Single press
                     if (Resource.InputManager.CurrentKeyState.IsKeyDown(key) && !Resource.InputManager.PreviousKeyState.IsKeyDown(key))
                     {
                         return true;

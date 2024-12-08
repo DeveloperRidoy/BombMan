@@ -15,7 +15,6 @@ namespace BombMan.Source.Components.GamePlay.Items
         public bool HasExploded { get; private set; }
         private bool _isExplosionActive;
 
-        // Added property to ensure explosion is handled only once
         public bool ExplosionHandled { get; set; }
 
         public Bomb(Vector2 position, int width, int height)
@@ -39,7 +38,7 @@ namespace BombMan.Source.Components.GamePlay.Items
 
             if (!HasExploded)
             {
-                // Bomb is ticking
+                // Bomb is not exploded
                 if (_timer >= _fuseDuration)
                 {
                     Explode();
@@ -74,9 +73,10 @@ namespace BombMan.Source.Components.GamePlay.Items
 
                 if (_isExplosionActive)
                 {
-                    // Adjust the destination rectangle for the explosion size
-                    int explosionWidth = Width * 2; // Example: double the width
-                    int explosionHeight = Height * 2; // Example: double the height
+                    int explosionWidth = Width * 2;
+                    int explosionHeight = Height * 2;
+
+                    // Use the explosion's destination rectangle
                     destinationRectangle = new Rectangle(
                         (int)(Position.X - (explosionWidth - Width) / 2),
                         (int)(Position.Y - (explosionHeight - Height) / 2),
@@ -94,9 +94,9 @@ namespace BombMan.Source.Components.GamePlay.Items
             }
         }
 
-        // Overriding GetBoundingRectangle to adjust for explosion size when active
         public override Rectangle GetBoundingRectangle()
         {
+            // Return the explosion's bounding rectangle if the explosion is active
             if (_isExplosionActive)
             {
                 int explosionWidth = Width * 2;
@@ -108,6 +108,7 @@ namespace BombMan.Source.Components.GamePlay.Items
                     explosionHeight
                 );
             }
+            // Return the bomb's bounding rectangle if the explosion is not active
             else
             {
                 return base.GetBoundingRectangle();

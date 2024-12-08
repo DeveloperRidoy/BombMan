@@ -8,7 +8,6 @@ namespace BombMan.Source.Components.GamePlay
     {
         public override void LoadContent()
         {
-            // Load the background image
             Texture = Art.BomberManPoster;
         }
     }

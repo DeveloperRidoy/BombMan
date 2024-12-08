@@ -57,7 +57,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
         private TimeSpan _enemySpawnTimer = TimeSpan.Zero;
         private readonly TimeSpan _enemySpawnInterval = TimeSpan.FromSeconds(10); // Spawn every 10 seconds
-        private readonly Vector2[] _spawnCorners; // Stores corner positions for spawning
+        private readonly Vector2[] _spawnCorners; // corner positions for spawning enemies
 
         private StageBackground _stageBackground;
 
@@ -106,6 +106,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             // Update the controller
             _controller.Update();
 
+            // Check if the back button is pressed
             if (_controller.IsBackPressed())
             {
                 OnPauseMenuRequest?.Invoke();

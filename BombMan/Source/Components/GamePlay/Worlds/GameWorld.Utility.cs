@@ -78,7 +78,7 @@ namespace BombMan.Source.Components.GamePlay.Worlds
             {
                 int x, y;
                 int attempts = 0;
-                const int maxAttempts = 100; // Prevent infinite loops by limiting attempts
+                const int maxAttempts = 100; // limiting attempts to 100
 
                 while (attempts < maxAttempts)
                 {
@@ -94,14 +94,17 @@ namespace BombMan.Source.Components.GamePlay.Worlds
                                            !_blocks.Exists(b => b.GetBoundingRectangle().Intersects(enemyBounds)) &&
                                            !_enemies.Exists(e => e.GetBoundingRectangle().Intersects(enemyBounds));
 
+                    // place enemy if position is valid
                     if (isPositionValid)
                     {
                         if (Level == 1)
                         {
+                            // Place only enemy type 1 in level 1
                             _enemies.Add(new EnemyLvl1(enemyPosition, CharacterWidth, CharacterHeight, 1, HudHeight, TileSize));
                         }
                         else
                         {
+                            // Randomly choose between enemy types
                             var toss = random.Next(2);
                             if (toss == 0)
                                 _enemies.Add(new EnemyLvl2(enemyPosition, CharacterWidth, CharacterHeight, 0.5f, HudHeight, TileSize, _hero));
@@ -116,7 +119,6 @@ namespace BombMan.Source.Components.GamePlay.Worlds
 
                 if (attempts >= maxAttempts)
                 {
-                    // Log or handle the case where an enemy could not be placed
                     Console.WriteLine($"Failed to place enemy {i + 1} after {maxAttempts} attempts.");
                 }
             }

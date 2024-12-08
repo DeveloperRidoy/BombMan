@@ -43,7 +43,7 @@ namespace BombMan.Source.Components.Menus
             // Calculate starting Y position after the score and high score messages
             float menuStartY = (Resource.GraphicsDevice.Viewport.Height - (titleSize.Y + 2 * (lineHeight + padding) + _menuItems.Count * (lineHeight + padding))) / 2
                                + titleSize.Y
-                               + 2 * (lineHeight + padding) // Space for "Score" and high score/congratulations message
+                               + 2 * (lineHeight + padding)
                                + padding;
 
             // Set each menu item's position and size
@@ -65,10 +65,9 @@ namespace BombMan.Source.Components.Menus
             // Calculate the bounds of the menu area
             Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
             float padding = 20f;
-            float menuWidth = 400f; // Fixed width for simplicity
+            float menuWidth = 400f;
             float menuHeight = titleSize.Y;
 
-            // Add height for score and high score/congratulations message
             menuHeight += Art.DefaultFont.MeasureString("Score: ").Y * 2 + padding;
 
             // Add height for menu items
@@ -89,7 +88,7 @@ namespace BombMan.Source.Components.Menus
                 (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
             );
 
-            // Draw the semi-transparent background
+            // Draw the background
             Rectangle backgroundRectangle = new(
                 (int)(menuPosition.X - padding),
                 (int)(menuPosition.Y - padding),
@@ -121,7 +120,7 @@ namespace BombMan.Source.Components.Menus
             // Draw the high score or congratulations message
             Vector2 highScoreOffset = new (0, Art.DefaultFont.MeasureString("Score: ").Y + padding);
 
-            // If it's a new high score, calculate centered position for the congratulations message
+            // If new high score, calculate centered position for the congratulations message
             if (_isNewHighScore)
             {
                 string highScoreMessage = "Congratulations! New High Score";
@@ -134,7 +133,7 @@ namespace BombMan.Source.Components.Menus
             }
             else
             {
-                // Otherwise, show the high score message, also centered
+                // show the centered high score message
                 string highScoreMessage = $"High Score: {_highScore}";
                 Vector2 highScoreSize = Art.DefaultFont.MeasureString(highScoreMessage);
                 Vector2 highScorePosition = new(
@@ -145,7 +144,7 @@ namespace BombMan.Source.Components.Menus
             }
 
 
-            // Draw each menu item
+            // Draw menu items
             foreach (var item in _menuItems)
             {
                 item.Draw();

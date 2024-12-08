@@ -26,14 +26,14 @@ namespace BombMan.Source.Components.GamePlay
 
         public GamePlayManager(bool loadGame)
         {
-            _gameWorld = new GameWorld(loadGame); // Automatically load or initialize the game world
+            _gameWorld = new GameWorld(loadGame);
             _gameWorld.OnGameOver += HandleGameOver;
             _gameWorld.OnPauseMenuRequest += () => {
                 _gameState = GameState.Paused;
                 MediaPlayer.Pause(); // Pause the game music
                 InitializePauseMenu();
             };
-            _gameBackground = new GameBackground(Vector2.Zero, Resource.ScreenWidth, Resource.ScreenHeight); // Assuming screen dimensions
+            _gameBackground = new GameBackground(Vector2.Zero, Resource.ScreenWidth, Resource.ScreenHeight);
         }
 
         public override void LoadContent()
@@ -74,10 +74,8 @@ namespace BombMan.Source.Components.GamePlay
 
         public override void Draw()
         {
-            // Always draw the background
             _gameBackground?.Draw();
 
-            // Draw elements based on the current game state
             switch (_gameState)
             {
                 case GameState.Playing:

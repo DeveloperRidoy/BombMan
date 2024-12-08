@@ -10,7 +10,7 @@ namespace BombMan.Source.Components.Menus
     {
         private Texture2D _image;
         private Song CreditsSong { get; set; }
-        private readonly float _maxImageHeightPercentage = 0.5f; // Image height should not exceed 20% of the screen height
+        private readonly float _maxImageHeightPercentage = 0.5f; // Image height should not exceed 50% of the screen height
 
         public AboutMenu() : base(
             "About",
@@ -33,7 +33,7 @@ namespace BombMan.Source.Components.Menus
         {
             Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
             float lineHeight = Art.DefaultFont.MeasureString("A").Y;
-            float padding = 30f; // Reduced padding for tighter layout
+            float padding = 30f;
 
             // Calculate total height required
             float imageHeight = Math.Min(_image.Height, Resource.GraphicsDevice.Viewport.Height * _maxImageHeightPercentage);
@@ -78,7 +78,6 @@ namespace BombMan.Source.Components.Menus
 
         public override void DrawBackground()
         {
-            // Define padding
             float verticalPadding = 20f; // Padding for top and bottom
             float horizontalPadding = 30f; // Padding for left and right
 

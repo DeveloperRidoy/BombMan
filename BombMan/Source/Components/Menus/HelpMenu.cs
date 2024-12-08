@@ -29,7 +29,7 @@ namespace BombMan.Source.Components.Menus
         {
             Vector2 titleSize = Art.DefaultFont.MeasureString(_title);
             float lineHeight = Art.DefaultFont.MeasureString("A").Y;
-            float padding = 30f; // Reduced padding for tighter layout
+            float padding = 30f;
 
             // Calculate total height required
             float imageHeight = Math.Min(_image.Height, Resource.GraphicsDevice.Viewport.Height * _maxImageHeightPercentage);
@@ -74,11 +74,10 @@ namespace BombMan.Source.Components.Menus
 
         public override void DrawBackground()
         {
-            // Define padding
             float verticalPadding = 20f; // Padding for top and bottom
             float horizontalPadding = 30f; // Padding for left and right
 
-            // Calculate the bounds of the menu area
+            // Calculate the width and height of the menu area
             float menuWidth = Math.Max(400f, _imageSize.X) + horizontalPadding * 2; // Add horizontal padding
             float menuHeight = _titlePosition.Y + _imageSize.Y + (_menuItems.Count * (Art.DefaultFont.MeasureString("A").Y + verticalPadding)) + (verticalPadding * 2);
 
@@ -88,7 +87,7 @@ namespace BombMan.Source.Components.Menus
                 (Resource.GraphicsDevice.Viewport.Height - menuHeight) / 2
             );
 
-            // Draw the semi-transparent background
+            // Draw the background
             Rectangle backgroundRectangle = new(
                 (int)(menuPosition.X),
                 (int)(menuPosition.Y),
@@ -105,7 +104,7 @@ namespace BombMan.Source.Components.Menus
             // Draw the title
             Resource.SpriteBatch.DrawString(Art.DefaultFont, _title, _titlePosition, Color.Black);
 
-            // Draw each menu item
+            // Draw menu items
             foreach (var item in _menuItems)
             {
                 item.Draw();
