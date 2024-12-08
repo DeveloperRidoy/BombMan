@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_036E3FA20AEA4E73AF6E12418B29F611"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_07055C8994A94C6BB77E6DD8FE75947A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -70,12 +76,6 @@
         "Entry"
         {
         "MsmKey" = "8:_58D3D5134BA347768F622779F0C9134A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5D47E59A27DA41479DDF024029EE56FA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1289,13 +1289,13 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BombManGame"
         "ProductCode" = "8:{2ABEF747-DFAA-4546-90CD-E9F9118B9FF7}"
-        "PackageCode" = "8:{AF564E2D-D784-4CF3-BD49-69D4486EAA11}"
+        "PackageCode" = "8:{530A590E-2DC1-4CC2-8A09-53A9AC792F3C}"
         "UpgradeCode" = "8:{E4467ACF-5FD0-4C33-99BD-E29E2A27F68D}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:Conestoga College"
         "ARPHELPTELEPHONE" = "8:"
@@ -1409,7 +1409,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D2DD628A99F640CE82AF2667C53E288B"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3658D441B62440D0A936E6F4F6E5D13D"
             {
             "Name" = "8:BombMan"
             "Arguments" = "8:"
@@ -1417,13 +1417,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5D47E59A27DA41479DDF024029EE56FA"
-            "Folder" = "8:_2106D049E70F47FE8B6E310DACCD8603"
+            "Target" = "8:_036E3FA20AEA4E73AF6E12418B29F611"
+            "Folder" = "8:_C88E866331A74BB0B25D75E1A3AFD103"
             "WorkingFolder" = "8:_9B5AD8CDA936462E923B066EEC2BD9DC"
             "Icon" = "8:"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FC79445ACBBB4891A3D772D3F4EC62C8"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_575AF1C128D241AC894F856B94614B66"
             {
             "Name" = "8:BombMan"
             "Arguments" = "8:"
@@ -1431,8 +1431,8 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5D47E59A27DA41479DDF024029EE56FA"
-            "Folder" = "8:_C88E866331A74BB0B25D75E1A3AFD103"
+            "Target" = "8:_036E3FA20AEA4E73AF6E12418B29F611"
+            "Folder" = "8:_2106D049E70F47FE8B6E310DACCD8603"
             "WorkingFolder" = "8:_9B5AD8CDA936462E923B066EEC2BD9DC"
             "Icon" = "8:"
             "Feature" = "8:"
@@ -1836,7 +1836,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5D47E59A27DA41479DDF024029EE56FA"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_036E3FA20AEA4E73AF6E12418B29F611"
             {
             "SourcePath" = "8:..\\BombManDesktopApp\\obj\\Release\\net8.0-windows7.0\\apphost.exe"
             "TargetName" = "8:"
