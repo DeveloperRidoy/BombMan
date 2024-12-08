@@ -5,11 +5,11 @@ VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BombMan", "BombMan\BombMan.csproj", "{0A6EFC19-1E28-47C5-BDBA-DE448AFE18CA}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BomManGameInstaller", "BomManGameInstaller\BomManGameInstaller.vdproj", "{178E5365-98D9-43C1-BF47-01267B50F476}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BombManDesktopApp", "BombManDesktopApp\BombManDesktopApp.csproj", "{EFBC545A-D671-432D-A9EA-B3DA28A44CDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BombManAndroid", "BombManAndroid\BombManAndroid.csproj", "{2B3784E0-E00F-499A-8273-8CD39E19A334}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BomManGameInstaller2", "BomManGameInstaller2\BomManGameInstaller2.vdproj", "{7CE7A2FA-F0EB-4D85-BC9E-DD889F1A2723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{0A6EFC19-1E28-47C5-BDBA-DE448AFE18CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A6EFC19-1E28-47C5-BDBA-DE448AFE18CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A6EFC19-1E28-47C5-BDBA-DE448AFE18CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{178E5365-98D9-43C1-BF47-01267B50F476}.Debug|Any CPU.ActiveCfg = Debug
-		{178E5365-98D9-43C1-BF47-01267B50F476}.Debug|Any CPU.Build.0 = Debug
-		{178E5365-98D9-43C1-BF47-01267B50F476}.Release|Any CPU.ActiveCfg = Release
-		{178E5365-98D9-43C1-BF47-01267B50F476}.Release|Any CPU.Build.0 = Release
 		{EFBC545A-D671-432D-A9EA-B3DA28A44CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFBC545A-D671-432D-A9EA-B3DA28A44CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFBC545A-D671-432D-A9EA-B3DA28A44CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,6 +31,10 @@ Global
 		{2B3784E0-E00F-499A-8273-8CD39E19A334}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B3784E0-E00F-499A-8273-8CD39E19A334}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B3784E0-E00F-499A-8273-8CD39E19A334}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7CE7A2FA-F0EB-4D85-BC9E-DD889F1A2723}.Debug|Any CPU.ActiveCfg = Debug
+		{7CE7A2FA-F0EB-4D85-BC9E-DD889F1A2723}.Debug|Any CPU.Build.0 = Debug
+		{7CE7A2FA-F0EB-4D85-BC9E-DD889F1A2723}.Release|Any CPU.ActiveCfg = Release
+		{7CE7A2FA-F0EB-4D85-BC9E-DD889F1A2723}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
