@@ -35,7 +35,7 @@ namespace BombMan
 
         private void SetWindowSize()
         {
-            int screenWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.65);
+            int screenWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.7);
             int screenHeight = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.9);
 
             _graphics.PreferredBackBufferWidth = screenWidth;
